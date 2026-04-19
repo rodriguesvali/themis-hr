@@ -3,7 +3,7 @@
 
 Data: 2026-04-19
 Responsável: `@project-mgr`
-Status: brief inicial do bootstrap; deve ser atualizado in place durante a fase de setup.
+Status: **Concluído**. Estrutura base de diretórios e arquivos de ambiente (`.env.example`) criados com sucesso. Prontos para handoff aos engenheiros.
 
 ## Objective
 
@@ -44,7 +44,7 @@ Neste momento, o objetivo principal é **preparar contexto, convenções e hando
 
 ## Workspace Structure
 
-A estrutura abaixo descreve o alvo do workspace após o setup. Ela não implica que todos os diretórios já existam neste momento do bootstrap.
+A estrutura abaixo descreve o alvo do workspace após o setup. Os diretórios principais (`backend/`, `frontend/`, `infra/`) e arquivos de base (`.env.example`) já foram criados.
 
 ```text
 themis-hr/
@@ -182,9 +182,9 @@ Dev Containers: Rebuild and Reopen in Container
 
 ## Risks and Notes
 
-- Angular ainda não foi scaffoldeado pelo CLI nesta fase.
+- As pastas `frontend/` e `backend/` foram inicializadas vazias/minimamente. O Scaffold Angular e o empacotamento do FastAPI/CrewAI ocorrerão nas etapas seguintes.
 - Os manifests criados agora são base inicial e poderão ser refinados pelos próximos agentes.
-- O projeto ainda não define o provider final de LLM.
+- O projeto ainda não define o provider final de LLM (padrão assumido local: `gpt-4o-mini` via OpenAI no `.env.example`).
 - A estratégia exata de knowledge base será detalhada na fase de backend/orquestração.
 
 ## Next Handoffs
