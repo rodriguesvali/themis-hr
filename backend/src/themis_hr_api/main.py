@@ -8,6 +8,7 @@ from fastapi import HTTPException
 
 from themis_hr_api.db.database import get_db, engine, Base
 from themis_hr_api.models import chat
+from fastapi.middleware.cors import CORSMiddleware
 
 # Logger setup
 logging.basicConfig(level=settings.log_level)
@@ -18,6 +19,15 @@ logger = logging.getLogger(__name__)
 # Isso será dever do Alembic mais tarde.
 
 app = FastAPI(title="Themis HR API", description="Multi-agent HR Helpdesk")
+
+# Permite acesso do frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4200"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class ChatRequest(BaseModel):
     user_id: str = "anonymous"

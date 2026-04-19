@@ -53,7 +53,18 @@ Fluxo mínimo esperado:
 
 Atualizar este arquivo com:
 
-- estratégia de integração
-- contratos efetivos usados
-- problemas encontrados
-- status do fluxo ponta a ponta
+### Estratégia de integração
+- Utilizado a ferramenta `HttpClient` nativa do Angular.
+- Backend FastAPI configurado com o middleware `CORSMiddleware` liberando acesso à URL do Angular (`http://localhost:4200`).
+- Serviço do Angular (`ChatService`) encapsulou o fluxo utilizando a reatividade introduzida com o `signal<T>` para gerenciar as mensagens em tela perfeitamente síncronas.
+
+### Contratos efetivos usados
+- Envio: `POST /api/v1/conversations`
+- Payload In: `{ "user_id": "user_id_random", "message": "string" }`
+- Payload Out: `{ "conversation_id": int, "reply": "string", "status": "string" }`
+
+### Problemas encontrados
+- *CORS Policy*: Sem permissão explícita no arquivo `main.py`, a primeira tentativa de chamada daria *Cross-Origin Block*. Corrigimos no backend em tempo real adicionando o Array `allow_origins`.
+
+### Status do fluxo ponta a ponta
+- **Concluído**. A conexão foi validada. O front-end envia a mensagem e o backend (ainda sem o agente do CrewAI acoplado à inteligência LLM) processa o log de chat no postgres do ambiente e devolve a resposta Mockada com sucesso.
