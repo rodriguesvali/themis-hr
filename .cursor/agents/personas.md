@@ -28,6 +28,7 @@
 - Objective: Build MVP Angular helpdesk interface and UI shell.
 - Key Tasks:
   - Implementing the Angular helpdesk shell and chat experience.
+  - Establishing PrimeNG as the visual and component foundation of the UI.
   - Creating visible placeholders for future features.
   - Ensuring MVP UI matches SAD constraints.
   - Documenting decisions and steps in frontend.md.

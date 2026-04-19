@@ -17,6 +17,7 @@ O objetivo do Themis HR é oferecer um help desk inteligente para colaboradores,
 ## Stack Alvo
 
 - **Frontend:** Angular
+- **UI Suite do frontend:** PrimeNG
 - **Backend:** Python com FastAPI
 - **Motor multiagente:** CrewAI
 - **Versionamento de banco:** Alembic
@@ -97,6 +98,7 @@ Os agentes de projeto trabalham de forma sequencial, usando os artefatos anterio
 - Use nomes de agentes com hífen: `@product-mgr`, `@system-arch`, `@project-mgr`, `@frontend-eng`, `@backend-eng`, `@integration-eng`, `@qa-eng`.
 - Use sempre os artefatos dentro de `project-context/1.define/` e `project-context/2.build/` como referência principal.
 - O frontend do Themis HR é **Angular**, não Next.js.
+- O alicerce visual do frontend é o **PrimeNG**, com componentes e theming compartilhados como base da UI.
 - O backend expõe APIs em **FastAPI**, não API routes de frontend.
 - CrewAI deve ser configurado de forma auditável e orientada por arquivos.
 - Quando houver banco de dados, o versionamento de schema deve ser feito com **Alembic**.

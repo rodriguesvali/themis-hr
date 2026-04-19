@@ -30,6 +30,7 @@ Checklist operacional para conduzir o bootstrap do Themis HR com AAMAD, do disco
 - [ ] Garantir que o adapter ativo é `crewai`.
 - [ ] Revisar se PRD e MRD refletem o stack alvo do projeto:
   - [ ] Angular no frontend
+  - [ ] PrimeNG como base visual e de componentes da UI
   - [ ] FastAPI no backend
   - [ ] CrewAI para orquestração multiagente
   - [ ] Alembic para versionamento de banco
@@ -67,6 +68,7 @@ Checklist operacional para conduzir o bootstrap do Themis HR com AAMAD, do disco
 - [ ] Executar `*develop-fe`.
 - [ ] Confirmar que o agente:
   - [ ] implementa a base da interface Angular
+  - [ ] usa PrimeNG como alicerce visual do MVP
   - [ ] cria componentes e fluxos de chat do MVP
   - [ ] adiciona stubs visuais para capacidades futuras
   - [ ] documenta decisões em `project-context/2.build/frontend.md`

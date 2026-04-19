@@ -19,6 +19,7 @@ O objetivo do sistema é transformar o atendimento tradicional de RH em um ecoss
 Construir uma solução de help desk para RH utilizando:
 
 - **Frontend**: Angular
+- **UI Suite**: PrimeNG
 - **Backend**: Python (FastAPI)
 - **Motor multiagente**: CrewAI
 - **Versionamento do banco**: Alembic
@@ -83,6 +84,7 @@ Agentes responsáveis pela construção do sistema:
 
 - **Frontend Agent**
   - Implementa UI Angular
+  - Usa PrimeNG como alicerce visual da aplicação
   - Integra com backend
 
 - **QA Agent**

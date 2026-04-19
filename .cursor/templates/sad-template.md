@@ -7,6 +7,7 @@ Generate a System Architecture Document for **Themis HR**, a multi-agent HR help
 The architecture must stay aligned with the current project context:
 
 - Frontend in **Angular**
+- UI suite in **PrimeNG**
 - Backend in **Python + FastAPI**
 - Multi-agent runtime in **CrewAI**
 - Database schema versioning with **Alembic**
@@ -60,6 +61,8 @@ Describe the end-to-end shape of the system, covering:
 Specify:
 
 - Angular application structure
+- PrimeNG usage strategy and shared UI foundation
+- theme and design token approach
 - Routing and feature modules or standalone component strategy
 - State and API communication strategy
 - UX flow for HR support conversations
