@@ -29,8 +29,8 @@
 
             <!-- Loop Mapeado nos Signals do Service -->
             <div *ngFor="let msg of chatService.messages()" [ngClass]="msg.role === 'user' ? 'items-end' : 'items-start'" class="flex flex-col gap-2">
-                <div [ngClass]="msg.role === 'user' ? 'bg-primary-500 rounded-tr-none' : 'bg-white border border-surface-200 rounded-tl-none'" class="p-4 rounded-2xl shadow-sm max-w-[80%]">
-                    <p [ngClass]="msg.role === 'user' ? 'text-white' : 'text-surface-800'" class="m-0 leading-relaxed">
+                <div [ngClass]="msg.role === 'user' ? 'bg-primary-500 rounded-tr-none text-white' : 'bg-white border border-surface-200 rounded-tl-none text-surface-800'" class="p-4 rounded-2xl shadow-sm max-w-[80%]">
+                    <p class="m-0 leading-relaxed">
                         {{ msg.content }}
                     </p>
                 </div>
@@ -62,7 +62,7 @@
                     [(ngModel)]="userInput" 
                     (keyup.enter)="sendMessage()"
                     placeholder="Digite sua dúvida de RH aqui..." 
-                    class="w-full" />
+                    class="w-full text-surface-900 bg-white" />
                 <p-button 
                     (onClick)="sendMessage()" 
                     [disabled]="!userInput.trim() || chatService.isTyping()"

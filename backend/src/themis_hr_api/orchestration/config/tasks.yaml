@@ -1,0 +1,54 @@
+intake_task:
+  description: >
+    Leia a mensagem bruta do usuário: "{user_message}"
+    Extraia as informações principais e limpe erros de digitação. Retorne apenas o texto limpo com a dúvida principal, sem interagir ou cumprimentar.
+  expected_output: >
+    A dúvida do usuário em formato claro e direto.
+  agent: intake_agent
+
+classification_task:
+  description: >
+    Leia a dúvida limpa que você recebeu e classifique em uma destas categorias:
+    [Férias, Benefícios, Pagamento, Saúde/Atestado, Denúncia, Outros].
+    Retorne apenas a categoria e a avaliação de sensibilidade no formato: "Categoria: X, Sensibilidade: Y (onde Y é Alta, Media ou Baixa)".
+  expected_output: >
+    "Categoria: X, Sensibilidade: Y"
+  agent: classification_agent
+
+knowledge_task:
+  description: >
+    Usando a classificação recebida e a dúvida inicial do usuário: "{user_message}", pesquise a resposta na base a seguir:
+    Base Conhecimento Simulada (MOCK):
+    {knowledge_base}
+    Extraia o texto fiel da política que responde à pergunta do usuário e devolva-o. Se não achar, avise "Nenhuma política de RH encontrada".
+  expected_output: >
+    As regras e parágrafos correspondentes à política consultada.
+  agent: knowledge_agent
+
+response_task:
+  description: >
+    Baseando-se estritamente na política de RH extraída na task anterior, monte a resposta ao usuário. Responda diretamente e seja didático. Não invente nada fora da política fornecida. Se a task anterior disse "Nenhuma política encontrada", diga apenas que não tem essa informação.
+  expected_output: >
+    Um texto claro respondendo a dúvida original baseada na política.
+  agent: response_agent
+
+sentiment_task:
+  description: >
+    Leia a mensagem original do usuário ("{user_message}") e perceba seu tom emocional. Em seguida, leia a resposta elaborada na etapa anterior e refine-a se necessário (adicione empatia se o usuário estiver bravo, ou tom acolhedor). Retorne o texto revisado na íntegra.
+  expected_output: >
+    A resposta final de RH ajustada emocionalmente.
+  agent: sentiment_agent
+
+escalation_task:
+  description: >
+    Revise a resposta gerada. Se a classificação anterior for de 'Sensibilidade: Alta' ou se a resposta contiver 'não tem essa informação', é obrigatório acionar o handoff humano e você NÃO deve dar a resposta do RH. 
+    Seu output deve ter OBRIGATORIAMENTE o seguinte padrão:
+    Se precisar escalar:
+    ESCALATE: TRUE
+    MOTIVO: <seu motivo de escalonamento>
+    Se NÃO precisar escalar:
+    ESCALATE: FALSE
+    RESPOSTA: <A resposta refinada da etapa de sentimento>
+  expected_output: >
+    ESCALATE: [TRUE/FALSE] \n [MOTIVO/RESPOSTA]: [conteúdo]
+  agent: escalation_agent

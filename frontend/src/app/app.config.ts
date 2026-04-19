@@ -4,7 +4,6 @@ import { provideHttpClient } from '@angular/common/http';
 
 import { routes } from './app.routes';
 
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 
@@ -13,7 +12,6 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }), 
     provideRouter(routes),
     provideHttpClient(),
-    provideAnimationsAsync(),
     providePrimeNG({
         theme: {
             preset: Aura,
@@ -21,7 +19,8 @@ export const appConfig: ApplicationConfig = {
                 cssLayer: {
                     name: 'primeng',
                     order: 'tailwind-base, primeng, tailwind-utilities'
-                }
+                },
+                darkModeSelector: false
             }
         }
     })

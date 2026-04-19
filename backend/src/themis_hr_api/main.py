@@ -5,10 +5,13 @@ import logging
 from themis_hr_api.core.config import settings
 from themis_hr_api.schemas.chat import ChatHistoryResponse
 from fastapi import HTTPException
+import asyncio
 
 from themis_hr_api.db.database import get_db, engine, Base
 from themis_hr_api.models import chat
 from fastapi.middleware.cors import CORSMiddleware
+from themis_hr_api.orchestration.crew import ThemisHRCrew
+from themis_hr_api.knowledge.mock import KNOWLEDGE_BASE_MOCK
 
 # Logger setup
 logging.basicConfig(level=settings.log_level)
@@ -43,8 +46,8 @@ def health_check():
     return {"status": "ok", "app_env": settings.app_env}
 
 @app.post("/api/v1/conversations", response_model=ChatResponse)
-def init_chat(request: ChatRequest, db: Session = Depends(get_db)):
-    """ Endpoint inicial temporário - vai ser integrado com CrewAI depois """
+async def init_chat(request: ChatRequest, db: Session = Depends(get_db)):
+    """ Endpoint de conversa com a Engine Multiagente CrewAI rodando síncrona """
     # 1. Cria a conversa
     new_conv = chat.Conversation(user_id=request.user_id)
     db.add(new_conv)
@@ -56,8 +59,38 @@ def init_chat(request: ChatRequest, db: Session = Depends(get_db)):
     db.add(user_msg)
     db.commit()
 
-    # MOCK de resposta do CrewAI (substituído no futuro)
-    bot_reply = "Olá! Eu sou a Themis, sua assistente de RH. Recebi sua dúvida e (em breve) nossos agentes CrewAI vão processá-la."
+    try:
+        # Prepara a entrada da Inteligência Artificial (CrewAI)
+        inputs = {
+            'user_message': request.message,
+            'knowledge_base': KNOWLEDGE_BASE_MOCK
+        }
+        
+        # Executa a Crew (CUIDADO: É um processo demorado chamando LLMs sequenciais)
+        # O ideal no futuro do MVP é usar background_tasks ou workers (Celery/Redis)
+        result = await asyncio.to_thread(ThemisHRCrew().crew().kickoff, inputs=inputs)
+        
+        # Fazendo parse do resultado "ESCALATE: TRUE \n MOTIVO/RESPOSTA: XYZ"
+        raw_output = str(result)
+        escalate = False
+        bot_reply = raw_output
+        
+        if "ESCALATE: TRUE" in raw_output.upper():
+            escalate = True
+            bot_reply = raw_output.replace("ESCALATE: TRUE", "").replace("MOTIVO:", "").strip()
+        else:
+            bot_reply = raw_output.replace("ESCALATE: FALSE", "").replace("RESPOSTA:", "").strip()
+
+    except Exception as e:
+        logger.error(f"Erro na engine da CrewAI: {e}")
+        bot_reply = "Perdão, minha central de processamento (LLM) falhou no momento ou sua chave de IA é inválida. Tente novamente mais tarde."
+        escalate = False
+
+    # Gravar status de escalonamento se ocorreu
+    if escalate:
+        new_conv.status = "escalated"
+        db.add(new_conv)
+
     themis_msg = chat.Message(conversation_id=new_conv.id, role="themis", content=bot_reply)
     db.add(themis_msg)
     db.commit()

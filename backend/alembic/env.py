@@ -15,7 +15,7 @@ from themis_hr_api.db.database import Base
 import themis_hr_api.models.chat # Carregar os metadados dos modelos
 
 from dotenv import load_dotenv
-load_dotenv(os.path.join(os.path.dirname(__file__), '..', '..', '.env.example')) # Usando o mock/example
+load_dotenv(os.path.join(os.path.dirname(__file__), '..', '..', '.env')) # Lendo a do .env pra que ele não erre a auth
 DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///./themis.db")
 
 # this is the Alembic Config object, which provides

@@ -78,15 +78,16 @@ Atualizar este arquivo com:
 - O banco escolhido para o primeiro `run` já foi o PostgreSQL conectado via `psycopg`, pois o `.devcontainer` já prove o banco pronto, economizando tempo de refatoração do SQLite futuramente.
 - A estrutura de módulos foi padronizada (`api`, `core`, `db`, `models`, `schemas`, `services`, `orchestration`, `knowledge`).
 - Tabelas iniciais (`conversations` e `messages`) foram criadas e as migrações aplicadas.
-- Endpoints MOCK (`/health`, `POST /api/v1/conversations`, `GET /api/v1/conversations/{id}`) criados no `main.py`.
+- Endpoints `POST /api/v1/conversations` **conectado ao motor CrewAI**.
+- Orquestrador (ThemisHRCrew) foi criado configurando 6 Agentes e suas 6 Tasks YAML conforme arquitetura definida no SAD.
+- Uma base de conhecimento fictícia em Markdown (`knowledge/mock.py`) foi injetada para que a LLM tenha regras reais para seguir e não alucine (simulando um Vector RAG futuro).
 
 ### Estrutura Criada
-O backend está encapsulado na pasta `backend/src/themis_hr_api`. O Alembic está gerenciando os scripts em `backend/alembic`. Dependências listadas em `backend/requirements.txt`.
+O backend está encapsulado na pasta `backend/src/themis_hr_api`. O Alembic está gerenciando os scripts em `backend/alembic`. Dependências listadas em `backend/requirements.txt`. O CrewAI se localiza dentro de `orchestration/`.
 
 ### Gaps conhecidos
-- O `POST /api/v1/conversations` ainda devolve uma string de resposta estática. A integração real com a lib do `crewai` não foi acoplada ao endpoint.
-- O Provider/Modelo para LLM está mockado no `.env.example` usando OpenAI, requer chaves reais no ambiente final para quando CrewAI for ligado.
+- O Provider/Modelo para LLM deve ser ajustado com chaves reais no ambiente.
+- O KICKOFF do CrewAI ainda é síncrono para o Frontend (A rota espera o tempo inteiro da execução do agente que pode ser até 10~20s). Em sistemas de conversação real, deve-se transitar para WebSockets ou Polling de Filas (Celery/Redis) e SSE.
 
 ### Próximos passos
-- (Para a fase de Integração/Desenvolvimento profundo) Substituir o *mock* do bot_reply no `main.py` por uma chamada real à pipeline CrewAI construindo os agentes (Intake, Classification, etc).
-- Assumir a persona do `@frontend-eng` para estruturar a tela do chat Angular que consome estes endpoints.
+- Conectar RAG Vetorial na task do Knowledge_agent (Pincone ou LangChain loader de PDFs).

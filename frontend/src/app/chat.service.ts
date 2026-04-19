@@ -27,8 +27,8 @@ export class ChatService {
   public messages = signal<ChatMessage[]>([]);
   public isTyping = signal<boolean>(false);
   
-  // No MVP sem Auth, criaremos um ID randomico pseudo-anônimo
-  private userId = `user_${Math.floor(Math.random() * 1000)}`;
+  // No MVP sem Auth, manteremos um ID de usuário fixo para fins de testes no DB
+  private userId = `1`;
 
   constructor(private http: HttpClient) {}
 

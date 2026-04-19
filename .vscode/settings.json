@@ -17,5 +17,7 @@
         "gemini/Google/models/gemini-3.1-pro-preview"
       ]
     }
-  }
+  },
+  "python.terminal.useEnvFile": true,
+  "python.envFile": "${workspaceFolder}/.env"
 }
