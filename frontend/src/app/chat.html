@@ -31,7 +31,11 @@
             <div *ngFor="let msg of chatService.messages()" [ngClass]="msg.role === 'user' ? 'items-end' : 'items-start'" class="flex flex-col gap-2">
                 <div class="max-w-[80%]">
                     <p-message [severity]="msg.role === 'user' ? 'success' : 'secondary'">
-                        <p style="color: inherit;" class="m-0 leading-relaxed">{{ msg.content }}</p>
+                        <div style="color: inherit;" class="m-0 leading-relaxed" *ngIf="msg.role === 'user'">
+                            {{ msg.content }}
+                        </div>
+                        <div class="m-0 leading-relaxed marked-container" *ngIf="msg.role !== 'user'" [innerHTML]="msg.content | markdown">
+                        </div>
                     </p-message>
                 </div>
                 <span [ngClass]="msg.role === 'user' ? 'mr-2' : 'ml-2'" class="text-xs text-surface-500">

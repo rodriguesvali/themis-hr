@@ -21,3 +21,27 @@ body {
   background-color: var(--p-surface-50);
   color: var(--p-surface-900);
 }
+
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}
+
+.marked-container p {
+  margin-bottom: 0.5rem;
+}
+
+.marked-container p:last-child {
+  margin-bottom: 0;
+}
+
+.marked-container strong {
+  font-weight: 600;
+  color: var(--p-surface-900);
+}
+
+.marked-container ul {
+  list-style-type: disc;
+  margin-left: 1.5rem;
+  margin-bottom: 0.5rem;
+}
