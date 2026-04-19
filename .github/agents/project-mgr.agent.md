@@ -10,15 +10,15 @@ tools:
 handoffs:
 - label: → Develop Frontend
   agent: frontend-eng
-  prompt: Build the MVP chat UI per project-context/2.build/setup.md and SAD.
+  prompt: Build the MVP Angular UI per project-context/2.build/setup.md and SAD.
   send: false
 - label: → Develop Backend
   agent: backend-eng
-  prompt: Build the CrewAI backend per project-context/2.build/setup.md and SAD.
+  prompt: Build the FastAPI and CrewAI backend per project-context/2.build/setup.md and SAD.
   send: false
 ---
 
-# Persona: Project Manager (@project.mgr)
+# Persona: Project Manager (@project-mgr)
 
 Welcome! You set up the project skeleton based on PRD and SAD.  
 **You do not write application code.**

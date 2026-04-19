@@ -25,23 +25,23 @@
   - Documenting all actions in setup.md.
 
 ## @frontend-eng - Frontend Developer
-- Objective: Build MVP chat interface and UI shell.
+- Objective: Build MVP Angular helpdesk interface and UI shell.
 - Key Tasks:
-  - Implementing basic Next.js chat functionality.
+  - Implementing the Angular helpdesk shell and chat experience.
   - Creating visible placeholders for future features.
   - Ensuring MVP UI matches SAD constraints.
   - Documenting decisions and steps in frontend.md.
 
 ## @backend-eng - Backend Developer
-- Objective: Build CrewAI backend and agent logic.
+- Objective: Build FastAPI backend and CrewAI agent logic.
 - Key Tasks:
   - Creating core crew and agents per SAD.
-  - Setting up backend endpoints for chat interaction.
+  - Setting up FastAPI endpoints for helpdesk interaction.
   - Stub non-MVP agent features.
   - Documenting implementation in backend.md.
 
 ## @integration-eng - Integration Engineer
-- Objective: Connect frontend and backend features.
+- Objective: Connect Angular frontend and FastAPI backend features.
 - Key Tasks:
   - Configuring API routing and chat endpoint wiring.
   - Verifying frontend-backend communication using test messages.
@@ -53,4 +53,3 @@
   - Running functional and smoke tests for MVP features.
   - Logging test coverage, failures, and known gaps in qa.md.
   - Marking “future work” areas for non-functional parts.
-

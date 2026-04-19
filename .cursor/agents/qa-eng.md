@@ -24,7 +24,7 @@ prohibited-actions:
   - Do performance or non-functional testing unless specifically scoped
 ---
 
-# Persona: QA Engineer (@qa.eng)
+# Persona: QA Engineer (@qa-eng)
 
 You are responsible for validating the MVP works as intended.
 

@@ -1,117 +1,123 @@
-# AAMAD Execution Checklist
+# Themis HR Execution Checklist
 
-This checklist guides you step-by-step through running AAMAD from Phase 1 (Define) through Phase 2 (Build), using the agentic workflows defined in the framework.
+Checklist operacional para conduzir o bootstrap do Themis HR com AAMAD, do discovery até a validação do MVP.
 
 ---
 
 ## Phase 1: Requirements Definition (`@product-mgr`)
 
-- [ ] Open a Cursor agent chat as `@product-mgr`.
-- [ ] Run one of:
-    - [ ] `*create-mrd` — Generate Market Research Document at project-context/1.define/mrd.md using .cursor/templates/mrd-template.md.
-    - [ ] `*create-prd` — Generate Product Requirements Document at project-context/1.define/prd.md using .cursor/templates/prd-template.md.
-    - [ ] `*create-context` — Generate both MRD and PRD with context summary for handoff.
-- [ ] Validate completeness: market analysis, user personas, feature requirements, success metrics, and business goals.
-- [ ] Record assumptions and open questions in artifacts for downstream resolution.
-- [ ] Approve context boundaries and artifacts for technical build phase.
+- [ ] Abrir um chat do agente `@product-mgr`.
+- [ ] Executar um dos fluxos:
+  - [ ] `*create-mr` para gerar `project-context/1.define/mr.md` usando `.cursor/templates/mr-template.md`
+  - [ ] `*create-prd` para gerar `project-context/1.define/prd.md` usando `.cursor/templates/prd-template.md`
+  - [ ] `*create-context` para gerar ambos e registrar contexto de handoff
+- [ ] Validar aderência com [CONTEXT.md](CONTEXT.md).
+- [ ] Confirmar escopo MVP, personas, jornadas, KPIs e riscos.
+- [ ] Registrar hipóteses e dúvidas em cada artefato.
 
 ---
 
 ## Before Phase 2 Starts
 
-- [ ] Clone this repository and install all prerequisites (see README.md).
-- [ ] Ensure your project-context/1.define folder includes:
-  - [ ] market-research-document.md (MRD)
-  - [ ] product-requirements-document.md (PRD)
-- [ ] Confirm `.cursor/` contains:
-  - [ ] agents/ (with all persona .md files)
-  - [ ] rules/, prompts/, templates/ folders as provided
-  - [ ] epics.md and personas.md reference files
-- [ ] Add "AAMAD_ADAPTER=crewai" to your environment variables (current default multiagent system framework)
+- [ ] Garantir que `project-context/1.define/` contém:
+  - [ ] `mr.md`
+  - [ ] `prd.md`
+- [ ] Confirmar que `.cursor/` contém:
+  - [ ] `agents/`
+  - [ ] `rules/`, `prompts/`, `templates/`
+  - [ ] `personas.md`
+  - [ ] `epics-index.mdc`
+- [ ] Garantir que o adapter ativo é `crewai`.
+- [ ] Revisar se PRD e MRD refletem o stack alvo do projeto:
+  - [ ] Angular no frontend
+  - [ ] FastAPI no backend
+  - [ ] CrewAI para orquestração multiagente
 
 ---
 
 ## Phase 2: Build Execution
 
-### Step 0: Architecture Definition (`@system.arch`)
+### Step 0: Architecture Definition (`@system-arch`)
 
-- [ ] Open a Cursor agent chat as `@system.arch`.
-- [ ] Run one of:
-    - [ ] `*create-sad` — Generate full SAD at project-context/1.define/sad.md using .cursor/templates/sad-template.md.
-    - [ ] `*create-sad --mvp` — Generate a lean MVP SAD, deferring nonessential components and NFRs; output to project-context/1.define/sad.md.
-- [ ] Validate SAD completeness: stakeholders/concerns, views, quality attributes, decisions, constraints, and risks.
-- [ ] Record assumptions and open questions in sad.md for downstream resolution.
+- [ ] Abrir um chat do agente `@system-arch`.
+- [ ] Executar um dos fluxos:
+  - [ ] `*create-sad` para gerar `project-context/1.define/sad.md`
+  - [ ] `*create-sad --mvp` para gerar a versão enxuta do MVP
+- [ ] Validar se a arquitetura descreve:
+  - [ ] SPA Angular
+  - [ ] APIs FastAPI
+  - [ ] CrewAI e configuração dos agentes
+  - [ ] base de conhecimento / RAG
+  - [ ] critérios de escalonamento para humano
+- [ ] Registrar pressupostos, decisões e trade-offs.
 
----
+### Step 1: Environment Setup (`@project-mgr`)
 
-### Step 1: Environment Setup (`@project.mgr`)
+- [ ] Abrir um chat do agente `@project-mgr`.
+- [ ] Executar `*setup-project`.
+- [ ] Confirmar que o agente:
+  - [ ] cria a estrutura inicial do monorepo/projeto
+  - [ ] define arquivos de ambiente de exemplo
+  - [ ] documenta tudo em `project-context/2.build/setup.md`
 
-- [ ] Open a Cursor agent chat as `@project.mgr`
-- [ ] Run `*setup-project`
-  - [ ] Scaffold directories and install required dependencies
-  - [ ] Define environment variables (in .env or as described)
-  - [ ] Document all actions in setup.md
+### Step 2: Frontend Development (`@frontend-eng`)
 
----
+- [ ] Abrir um chat do agente `@frontend-eng`.
+- [ ] Executar `*develop-fe`.
+- [ ] Confirmar que o agente:
+  - [ ] implementa a base da interface Angular
+  - [ ] cria componentes e fluxos de chat do MVP
+  - [ ] adiciona stubs visuais para capacidades futuras
+  - [ ] documenta decisões em `project-context/2.build/frontend.md`
 
-### Step 2: Frontend Development (`@frontend.eng`)
+### Step 3: Backend Development (`@backend-eng`)
 
-- [ ] Open a Cursor agent chat as `@frontend.eng`
-- [ ] Run `*develop-fe`
-  - [ ] Implement MVP chat interface (Next.js, assistant-ui)
-  - [ ] Add UI stubs for future planned features
-  - [ ] Style and make the interface responsive
-  - [ ] Document all decisions and status in frontend.md
+- [ ] Abrir um chat do agente `@backend-eng`.
+- [ ] Executar `*develop-be`.
+- [ ] Confirmar que o agente:
+  - [ ] estrutura o backend FastAPI
+  - [ ] implementa a base do CrewAI e dos agentes do MVP
+  - [ ] expõe endpoints HTTP para conversa/atendimento
+  - [ ] documenta decisões em `project-context/2.build/backend.md`
 
----
+### Step 4: Integration (`@integration-eng`)
 
-### Step 3: Backend Development (`@backend.eng`)
+- [ ] Abrir um chat do agente `@integration-eng`.
+- [ ] Executar `*integrate-api`.
+- [ ] Confirmar que o agente:
+  - [ ] conecta Angular ao backend FastAPI
+  - [ ] valida o fluxo ponta a ponta
+  - [ ] documenta riscos e lacunas em `project-context/2.build/integration.md`
 
-- [ ] Open a Cursor agent chat as `@backend.eng`
-- [ ] Run `*develop-be`
-  - [ ] Scaffold CrewAI backend and MVP crew/agent(s)
-  - [ ] Add stub code for future/backlog agent logic
-  - [ ] Implement backend chat API endpoint
-  - [ ] Document all work in backend.md
+### Step 5: Quality Assurance (`@qa-eng`)
 
----
-
-### Step 4: Integration (`@integration.eng`)
-
-- [ ] Open a Cursor agent chat as `@integration.eng`
-- [ ] Run `*integrate-api`
-  - [ ] Wire MVP frontend chat to backend chat API
-  - [ ] Test basic chat round-trip functionality
-  - [ ] Document integration and known issues in integration.md
-
----
-
-### Step 5: Quality Assurance (`@qa.eng`)
-
-- [ ] Open a Cursor agent chat as `@qa.eng`
-- [ ] Run `*qa`
-  - [ ] Perform smoke tests and functional tests on chat flow
-  - [ ] Verify frontend and backend are connected
-  - [ ] Log issues, known gaps, and future work in qa.md
-
----
-
-### Step 6: Local MVP Launch
-
-- [ ] Follow docs in setup.md and integration.md to run the full MVP locally
-- [ ] Confirm MVP chat use case works end-to-end
-- [ ] Review all generated artifact files in project-context/2.build
+- [ ] Abrir um chat do agente `@qa-eng`.
+- [ ] Executar `*qa`.
+- [ ] Confirmar que o agente:
+  - [ ] roda smoke tests e testes funcionais
+  - [ ] verifica o fluxo de atendimento de ponta a ponta
+  - [ ] registra bugs, gaps e próximos passos em `project-context/2.build/qa.md`
 
 ---
 
-### Step 7: Prepare for Next Phase
+## Step 6: Local MVP Launch
 
-- [ ] Archive all MVP milestone artifacts in project-context/2.build and 3.deliver
-- [ ] List all deferred/backlog features in qa.md and/or as GitHub issues
-- [ ] Share repo and context docs with team or community for feedback
+- [ ] Seguir `setup.md` e `integration.md` para rodar o sistema localmente.
+- [ ] Validar o fluxo principal do Themis HR:
+  - [ ] entrada da solicitação
+  - [ ] classificação
+  - [ ] consulta à base de conhecimento
+  - [ ] resposta final
+  - [ ] escalonamento quando aplicável
 
 ---
 
-> For detailed guidelines and troubleshooting, see README.md and documentation in `.cursor/templates` and `.cursor/rules`.
+## Step 7: Prepare for Next Phase
 
+- [ ] Consolidar artefatos em `project-context/2.build/` e `project-context/3.deliver/`.
+- [ ] Registrar backlog e deferrals.
+- [ ] Converter gaps identificados em issues ou tarefas futuras.
 
+---
+
+Para detalhes adicionais, consulte [README.md](README.md), `.cursor/templates/` e `.cursor/rules/`.
