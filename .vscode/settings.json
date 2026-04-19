@@ -8,5 +8,14 @@
   ],
   "chat.agentFilesLocations": [
     ".github/agents"
-  ]
+  ],
+  "chat.mcp.serverSampling": {
+    "themis-hr/.vscode/mcp.json: primeng/mcp": {
+      "allowedModels": [
+        "copilot/auto",
+        "copilotcli/claude-haiku-4.5",
+        "gemini/Google/models/gemini-3.1-pro-preview"
+      ]
+    }
+  }
 }
