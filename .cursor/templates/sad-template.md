@@ -8,6 +8,7 @@ The architecture must stay aligned with the current project context:
 
 - Frontend in **Angular**
 - UI suite in **PrimeNG**
+- Initial PrimeNG preset in **Nora**
 - Backend in **Python + FastAPI**
 - Multi-agent runtime in **CrewAI**
 - Database schema versioning with **Alembic**
@@ -63,6 +64,7 @@ Specify:
 - Angular application structure
 - PrimeNG usage strategy and shared UI foundation
 - theme and design token approach
+- how the Nora preset is adopted and customized
 - Routing and feature modules or standalone component strategy
 - State and API communication strategy
 - UX flow for HR support conversations

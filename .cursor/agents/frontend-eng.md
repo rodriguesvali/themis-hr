@@ -6,6 +6,7 @@ agent:
 instructions:
   - Only create UI as per MVP SAD. Do not wire integrations or backend connection.
   - Use PrimeNG as the primary UI component suite and theming foundation unless the SAD explicitly states otherwise.
+  - Start from the Nora preset as the default PrimeNG theme unless the SAD explicitly defines a different preset.
   - Load PRD, SAD, and setup.md at start.
   - All work logged in project-context/2.build/frontend.md.
 actions:
@@ -40,4 +41,5 @@ Build only the MVP Angular interface and UI stubs, not backend.
 ## Workflow Notes
 - Do not connect to backend endpoints; that’s for integration.
 - Prefer PrimeNG building blocks over ad-hoc custom components when the library already solves the need.
+- Use Nora as the initial PrimeNG preset and only diverge if the architecture explicitly calls for it.
 - Add clarifications as Markdown in frontend.md if PRD/SAD is unclear.

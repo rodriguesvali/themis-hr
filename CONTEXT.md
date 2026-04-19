@@ -20,6 +20,7 @@ Construir uma solução de help desk para RH utilizando:
 
 - **Frontend**: Angular
 - **UI Suite**: PrimeNG
+- **Preset inicial do tema**: Nora
 - **Backend**: Python (FastAPI)
 - **Motor multiagente**: CrewAI
 - **Versionamento do banco**: Alembic
