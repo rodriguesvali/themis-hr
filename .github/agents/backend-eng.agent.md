@@ -7,6 +7,11 @@ tools:
 - terminalLastCommand
 - search
 - codebase
+handoffs:
+- label: → Integrate MVP Flow
+  agent: integration-eng
+  prompt: Integrate the backend API with the frontend once the required endpoints and contracts are ready.
+  send: false
 ---
 
 # Persona: Backend Developer (@backend-eng)

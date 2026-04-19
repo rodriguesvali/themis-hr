@@ -23,10 +23,10 @@ Checklist operacional para conduzir o bootstrap do Themis HR com AAMAD, do disco
   - [ ] `mr.md`
   - [ ] `prd.md`
 - [ ] Confirmar que `.cursor/` contém:
-  - [ ] `agents/`
-  - [ ] `rules/`, `prompts/`, `templates/`
-  - [ ] `personas.md`
-  - [ ] `epics-index.mdc`
+  - [ ] `.cursor/agents/`
+  - [ ] `.cursor/rules/`, `.cursor/prompts/`, `.cursor/templates/`
+  - [ ] `.cursor/agents/personas.md`
+  - [ ] `.cursor/rules/epics-index.mdc`
 - [ ] Garantir que o adapter ativo é `crewai`.
 - [ ] Revisar se PRD e MRD refletem o stack alvo do projeto:
   - [ ] Angular no frontend
@@ -59,7 +59,7 @@ Checklist operacional para conduzir o bootstrap do Themis HR com AAMAD, do disco
 - [ ] Abrir um chat do agente `@project-mgr`.
 - [ ] Executar `*setup-project`.
 - [ ] Confirmar que o agente:
-  - [ ] cria a estrutura inicial do monorepo/projeto
+  - [ ] define a estrutura alvo do monorepo/projeto e o scaffold mínimo permitido
   - [ ] define arquivos de ambiente de exemplo
   - [ ] documenta tudo em `project-context/2.build/setup.md`
 

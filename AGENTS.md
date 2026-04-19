@@ -33,8 +33,10 @@ Os agentes do produto Themis HR serão implementados no backend e orquestrados s
 
 - Visão do produto: `CONTEXT.md`
 - Requisitos e pesquisa: `project-context/1.define/`
-- Evidências de build: `project-context/2.build/`
+- Evidências e briefs de build: `project-context/2.build/`
 - Evidências de entrega: `project-context/3.deliver/`
+
+Os arquivos em `project-context/2.build/` podem começar como briefs de handoff do bootstrap e devem ser atualizados in place pelos agentes da fase de build.
 
 ## IDE Definitions
 

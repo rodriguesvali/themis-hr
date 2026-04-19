@@ -76,8 +76,11 @@ Agentes responsáveis pela construção do sistema:
 - **Product Agent**
   - Define requisitos e user stories
 
-- **Architect Agent**
+- **System Architect Agent**
   - Define arquitetura, padrões e contratos
+
+- **Project Manager Agent**
+  - Prepara ambiente, estrutura e handoffs do build
 
 - **Backend Agent**
   - Implementa APIs (FastAPI)
@@ -86,13 +89,14 @@ Agentes responsáveis pela construção do sistema:
 - **Frontend Agent**
   - Implementa UI Angular
   - Usa PrimeNG como alicerce visual da aplicação
-  - Integra com backend
+
+- **Integration Agent**
+  - Conecta frontend Angular ao backend FastAPI
+  - Valida o fluxo ponta a ponta do MVP
 
 - **QA Agent**
   - Cria testes e cenários
-
-- **Reviewer Agent**
-  - Garante consistência e qualidade
+  - Registra lacunas e riscos residuais
 
 ---
 

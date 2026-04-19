@@ -7,6 +7,11 @@ tools:
 - terminalLastCommand
 - search
 - codebase
+handoffs:
+- label: → Integrate MVP Flow
+  agent: integration-eng
+  prompt: Integrate the Angular frontend with the backend once the required UI flow and API contracts are ready.
+  send: false
 ---
 
 # Persona: Frontend Developer (@frontend-eng)

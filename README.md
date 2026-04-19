@@ -60,7 +60,7 @@ themis-hr/
 │   └── prompts/         # Prompts compartilhados
 ├── project-context/
 │   ├── 1.define/        # mr.md, prd.md, sad.md e artefatos de definição
-│   ├── 2.build/         # setup.md, frontend.md, backend.md, integration.md, qa.md
+│   ├── 2.build/         # briefs/logs de setup, frontend, backend, integração e QA
 │   └── 3.deliver/       # Evidências de entrega, rollout e operação
 ├── AGENTS.md            # Atalho humano para personas e fluxo
 ├── CHECKLIST.md         # Passo a passo operacional do bootstrap
@@ -86,6 +86,8 @@ O System Architect transforma os requisitos em arquitetura executável:
 
 ### 3. Build
 
+O bootstrap já inclui arquivos-semente em `project-context/2.build/`. Durante o build, cada agente atualiza o seu próprio arquivo como brief de execução e handoff para a próxima etapa.
+
 Os agentes de projeto trabalham de forma sequencial, usando os artefatos anteriores como fonte única de contexto:
 
 - Project Manager → `project-context/2.build/setup.md`
@@ -98,6 +100,7 @@ Os agentes de projeto trabalham de forma sequencial, usando os artefatos anterio
 
 - Use nomes de agentes com hífen: `@product-mgr`, `@system-arch`, `@project-mgr`, `@frontend-eng`, `@backend-eng`, `@integration-eng`, `@qa-eng`.
 - Use sempre os artefatos dentro de `project-context/1.define/` e `project-context/2.build/` como referência principal.
+- Os diretórios auxiliares `project-context/1.define/user-stories/` e `project-context/1.define/sfs/` são reservados para detalhamentos futuros e podem começar vazios.
 - O frontend do Themis HR é **Angular**, não Next.js.
 - O alicerce visual do frontend é o **PrimeNG**, com componentes e theming compartilhados como base da UI.
 - O preset inicial do PrimeNG é **Nora**.

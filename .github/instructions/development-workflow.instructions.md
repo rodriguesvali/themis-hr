@@ -9,10 +9,12 @@ description: AAMAD modular development workflow for context-aware agent coordina
 ## Development Module Structure
 Execute development in separate modules with fresh context:
 
-1. **Module 1: Core Configuration** - Agent and task definitions only
-2. **Module 2: API Integration** - Backend connectivity only  
-3. **Module 3: Frontend Integration** - UI and user experience only
-4. **Module 4: Validation** - End-to-end testing only
+1. **Module 1: Define** - product context, market research, and PRD
+2. **Module 2: Architecture** - SAD and optional SFS artifacts
+3. **Module 3: Setup** - environment, structure, and build handoffs
+4. **Module 4: Frontend / Backend Build** - implementation tracks that can progress independently
+5. **Module 5: Integration** - frontend-backend wiring and contract validation
+6. **Module 6: Validation** - QA, smoke tests, and residual-risk logging
 
 ## Context Management Rules
 - Start each module in fresh Cursor session (Cmd+Shift+P → "New Chat")
@@ -22,15 +24,17 @@ Execute development in separate modules with fresh context:
 
 ## Module Success Criteria
 Each module must be fully functional and testable independently:
-- Module 1: CrewAI crew.kickoff() executes successfully
-- Module 2: API endpoints return valid responses  
-- Module 3: Frontend displays and interacts correctly
-- Module 4: Complete workflow functions end-to-end
+- Module 1: `mr.md` and `prd.md` are aligned with `CONTEXT.md`
+- Module 2: `sad.md` reflects MVP architecture and constraints
+- Module 3: setup decisions and environment contracts are documented
+- Module 4: frontend and backend artifacts are individually buildable within scope
+- Module 5: the MVP flow works end-to-end
+- Module 6: QA findings and release risks are documented
 
 ## Development Flow Control
 - Complete each module fully before proceeding to next
 - Validate module functionality before context switch
 - Document module outputs for next module reference
-- Never backtrack to previous modules within same session
+- Re-open previous modules only when a downstream finding requires an explicit documented correction
 
 > For detailed agent/epic/action mapping, see `.cursor/rules/epics-index.mdc`.

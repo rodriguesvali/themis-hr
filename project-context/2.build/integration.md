@@ -3,6 +3,7 @@
 
 Data: 2026-04-19
 Responsável alvo: `@integration-eng`
+Status: brief inicial do bootstrap; deve ser atualizado in place durante a integração.
 
 ## Mission
 

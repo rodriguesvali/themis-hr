@@ -11,14 +11,14 @@ description: Core, framework-agnostic rules and contracts for AAMAD; applies to 
 ## Principles
 - **Single responsibility personas:** each persona owns a defined epic with explicit inputs, outputs, and prohibited actions.
 - **Context-first engineering:** all outputs must trace to PRD, SAD, SFS, or user stories; do not invent requirements.
-- **Reproducibility and provenance:** every artifact includes Sources, Assumptions, and Open Questions sections.
+- **Reproducibility and provenance:** every artifact preserves source traceability, assumptions, open questions, and an audit trail, either through explicit sections or template-equivalent headings.
 - **Deterministic execution:** actions are idempotent; perform temp-write-then-atomic-replace for file outputs.
 - **Minimal viable architecture first:** implement MVP scope before expanding; document deferrals with rationale.
 
 ## Agent Contract
 - Personas declare: id, role, instructions, actions, inputs, outputs, prohibited-actions. Agents MUST read only declared inputs and write only to declared outputs.
 - On missing/ambiguous inputs, write Assumptions and Open Questions; do not fabricate content.
-- All actions must append an Audit block with timestamp, persona id, and action name to the artifact.
+- All actions must preserve an audit trail with timestamp, persona id, and action name, either in an explicit Audit block or in template-defined execution metadata.
 
 ## Task Contract
 - Each task defines: description, expected_output (exact target file path and required headings), acceptance_criteria, traceability to PRD/SAD/SFS anchors.
@@ -30,7 +30,7 @@ description: Core, framework-agnostic rules and contracts for AAMAD; applies to 
 
 ## State and Output
 - Outputs follow template headings exactly (.cursor/templates). Do not wrap machine-parsed blocks in code fences if templates require raw content.
-- Artifacts end with sections: Sources, Assumptions, Open Questions, Audit.
+- If a template does not define equivalent metadata headings, artifacts should end with: Sources, Assumptions, Open Questions, Audit.
 
 ## Adapter Abstraction
 - The active framework adapter binds: framework agent, task, tool, execution controls, logging. Personas/tasks remain adapter-neutral.

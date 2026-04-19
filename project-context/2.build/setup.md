@@ -3,6 +3,7 @@
 
 Data: 2026-04-19
 Responsável: `@project-mgr`
+Status: brief inicial do bootstrap; deve ser atualizado in place durante a fase de setup.
 
 ## Objective
 
@@ -42,6 +43,8 @@ Neste momento, o objetivo principal é **preparar contexto, convenções e hando
 - qualquer scaffold técnico criado antes desta decisão deve ser tratado apenas como referência inicial, não como início obrigatório da implementação final.
 
 ## Workspace Structure
+
+A estrutura abaixo descreve o alvo do workspace após o setup. Ela não implica que todos os diretórios já existam neste momento do bootstrap.
 
 ```text
 themis-hr/

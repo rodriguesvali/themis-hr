@@ -3,6 +3,7 @@
 
 Data: 2026-04-19
 Responsável alvo: `@frontend-eng`
+Status: brief inicial do bootstrap; deve ser atualizado in place conforme o frontend for implementado.
 
 ## Mission
 
