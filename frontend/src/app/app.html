@@ -1,0 +1,55 @@
+<div class="flex flex-col h-screen w-full bg-surface-50">
+    <!-- Header -->
+    <header class="flex items-center justify-between p-4 bg-white shadow-sm border-b border-surface-200">
+        <div class="flex items-center gap-2">
+            <h1 class="text-xl font-bold text-surface-900 m-0">Themis HR</h1>
+            <span class="bg-primary-100 text-primary-700 text-xs px-2 py-1 rounded-md ml-2 font-semibold">Beta</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-primary-500 text-white flex items-center justify-center font-bold">U</div>
+        </div>
+    </header>
+
+    <!-- Main Content (Chat Area) -->
+    <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 flex justify-center">
+        <div class="w-full max-w-4xl flex flex-col gap-4">
+            
+            <!-- Welcome Message (MOCK) -->
+            <div class="flex flex-col items-start gap-2">
+                <div class="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm border border-surface-200 max-w-[80%]">
+                    <p class="m-0 text-surface-800 leading-relaxed">
+                        Olá! Eu sou a <strong>Themis</strong>, sua assistente inteligente de Recursos Humanos. 
+                        Como posso ajudar você hoje? (Ex: Como pedir férias? Qual a política de home office?)
+                    </p>
+                </div>
+                <span class="text-xs text-surface-500 ml-2">10:00 AM • Themis Agent</span>
+            </div>
+
+            <!-- User Message (MOCK) -->
+            <div class="flex flex-col items-end gap-2">
+                <div class="bg-primary-500 p-4 rounded-2xl rounded-tr-none shadow-sm max-w-[80%]">
+                    <p class="m-0 text-white leading-relaxed">
+                        Gostaria de saber quando posso solicitar minhas próximas férias.
+                    </p>
+                </div>
+                <span class="text-xs text-surface-500 mr-2">10:02 AM • Você</span>
+            </div>
+
+            <!-- Typing Indicator (MOCK) -->
+            <div class="flex flex-col items-start gap-2">
+                <div class="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm border border-surface-200 max-w-[80%] flex gap-2 items-center">
+                    <span class="text-surface-600 text-sm">Consultando políticas...</span>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer Input -->
+    <footer class="p-4 bg-white border-t border-surface-200 flex justify-center">
+        <div class="w-full max-w-4xl flex gap-2 items-center">
+            <input type="text" placeholder="Digite sua dúvida de RH aqui..." class="w-full p-2 border border-surface-300 rounded-md focus:border-primary-500 outline-none" />
+            <button class="bg-primary-500 text-white px-4 py-2 rounded-md font-bold hover:bg-primary-600 cursor-pointer">Enviar</button>
+        </div>
+    </footer>
+</div>

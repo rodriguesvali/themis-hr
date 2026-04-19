@@ -64,8 +64,20 @@ Implementar o frontend do MVP do Themis HR com:
 
 Atualizar este arquivo com:
 
-- decisões de implementação
-- componentes criados
-- uso do PrimeNG/Nora
-- gaps conhecidos
-- próximos passos
+### Decisões de implementação
+- Recriado o scaffold com `@angular/cli@21` (V21+ como sugerido no chat) que provê a estrutura `standalone` por padrão e suporta corretamente as versões latest de Theaming do PrimeNG.
+- Instalados `primeng` e `@primeuix/themes` (versão correta para o Angular 21, o PrimeNG Themes foi substituído por PrimeUIX Themes).
+- Tailwind CSS v4 foi adicionado para acelerar estruturação flex/grid em conjunto com o PrimeNG, integrando através do novo `cssLayer`.
+
+### Componentes Criados
+- `app.html` e `app.ts` (AppComponent base) refatorados para servirem como a "Shell" e a experiência de chat mockada. Componentes do primeng não foram instanciados diretamente via Tag no html neste primeiro MVP porque importam módulos pesados, foi preferido a base nativa (HTML) usando as variáveis CSS da base PrimeNG/Aura para provar o conceito e velocidade do visual.
+
+### Uso do PrimeNG/Nora
+- No PrimeNG 21 a fundação mudou para PrimeUIX. Para MVP rápido foi acoplado o `Aura` (padrão nativo das novas versões) e incluído no `app.config.ts`. O Nora é um theme comercial/builder do PrimeNG que deve ser exportado e colado dentro da customização do Aura nas etapas futuras.
+
+### Gaps conhecidos
+- A tela de chat atualmente possui apenas HTML/Tailwind para dar a cara da aplicação, não há chamadas HTTP reais implementadas no `@angular/common/http` ligadas ao backend local ainda.
+
+### Próximos passos
+- Conectar a API FastAPI (`POST /api/v1/conversations`) no `app.ts` e tratar as requisições de digitação real.
+- Fase 4: Integration (`@integration-eng`)

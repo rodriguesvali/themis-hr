@@ -73,7 +73,20 @@ Persistir somente:
 
 Atualizar este arquivo com:
 
-- decisões de implementação
-- estrutura criada
-- gaps conhecidos
-- próximos passos
+### Decisões de implementação
+- A stack do backend foi montada usando FastAPI, SQLAlchemy 2.0 e Alembic.
+- O banco escolhido para o primeiro `run` já foi o PostgreSQL conectado via `psycopg`, pois o `.devcontainer` já prove o banco pronto, economizando tempo de refatoração do SQLite futuramente.
+- A estrutura de módulos foi padronizada (`api`, `core`, `db`, `models`, `schemas`, `services`, `orchestration`, `knowledge`).
+- Tabelas iniciais (`conversations` e `messages`) foram criadas e as migrações aplicadas.
+- Endpoints MOCK (`/health`, `POST /api/v1/conversations`, `GET /api/v1/conversations/{id}`) criados no `main.py`.
+
+### Estrutura Criada
+O backend está encapsulado na pasta `backend/src/themis_hr_api`. O Alembic está gerenciando os scripts em `backend/alembic`. Dependências listadas em `backend/requirements.txt`.
+
+### Gaps conhecidos
+- O `POST /api/v1/conversations` ainda devolve uma string de resposta estática. A integração real com a lib do `crewai` não foi acoplada ao endpoint.
+- O Provider/Modelo para LLM está mockado no `.env.example` usando OpenAI, requer chaves reais no ambiente final para quando CrewAI for ligado.
+
+### Próximos passos
+- (Para a fase de Integração/Desenvolvimento profundo) Substituir o *mock* do bot_reply no `main.py` por uma chamada real à pipeline CrewAI construindo os agentes (Intake, Classification, etc).
+- Assumir a persona do `@frontend-eng` para estruturar a tela do chat Angular que consome estes endpoints.
