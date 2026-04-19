@@ -16,7 +16,7 @@ inputs:
   - project-context/2.build/frontend.md
   - project-context/2.build/backend.md
   - project-context/2.build/integration.md
-  - project-context/product-requirements-document.md
+  - project-context/1.define/prd.md
 outputs:
   - project-context/2.build/qa.md
 prohibited-actions:
