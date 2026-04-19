@@ -8,22 +8,26 @@ intake_task:
 
 classification_task:
   description: >
-    Leia a dúvida limpa que você recebeu e classifique em uma destas categorias:
-    [Férias, Benefícios, Pagamento, Saúde/Atestado, Denúncia, Outros].
-    Retorne apenas a categoria e a avaliação de sensibilidade no formato: "Categoria: X, Sensibilidade: Y (onde Y é Alta, Media ou Baixa)".
+    O usuário escreveu o seguinte ({user_message}). Com base nas categorias disponíveis no seu papel, escreva o NOME DA CATEGORIA e NOME DA BASE DE CONHECIMENTO ASSOCIADA que será necessária. 
+    Exemplos de Saída Esperada:
+    [Categoria: Férias e Licenças, Arquivo: ferias.md, Sensibilidade: Baixa]
+    [Categoria: Remuneração, Arquivo: remuneracao.md, Sensibilidade: Baixa]
+    [Categoria: Jornada e Ponto, Arquivo: jornada_feriados.md, Sensibilidade: Media]
+    [Categoria: Admissão e Estágio, Arquivo: admissao_contratos.md, Sensibilidade: Media]
+    [Categoria: Rescisão, Arquivo: rescisao.md, Sensibilidade: Alta]
+    [Categoria: Assuntos Gerais, Arquivo: n/a, Sensibilidade: Alta]
   expected_output: >
-    "Categoria: X, Sensibilidade: Y"
-  agent: classification_agent
+    "[Categoria: X, Arquivo: Y, Sensibilidade: Z]"
+  agent: router_agent
 
 knowledge_task:
   description: >
-    Usando a classificação recebida e a dúvida inicial do usuário: "{user_message}", pesquise a resposta na base a seguir:
-    Base Conhecimento Simulada (MOCK):
-    {knowledge_base}
-    Extraia o texto fiel da política que responde à pergunta do usuário e devolva-o. Se não achar, avise "Nenhuma política de RH encontrada".
+    Base de conhecimento do arquivo sugerido pelo router carregada aqui no seu contexto ({knowledge_base}).
+    Cruze a dúvida original do usuário "{user_message}" com este documento. Retorne o trecho da política (ou trecho de artigo da CLT) que fundamenta a resposta.
+    Se a dúvida fugir do assunto do arquivo atual e for, por exemplo, sobre "Horas Extras" mas você está carregado com regras de "Férias", responda explicitamente "Erro de Contexto. Não encontrei no meu guia atual.".
   expected_output: >
-    As regras e parágrafos correspondentes à política consultada.
-  agent: knowledge_agent
+    Parágrafos correspondentes à política/CLT consultada.
+  agent: expert_agent
 
 response_task:
   description: >

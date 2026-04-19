@@ -27,17 +27,17 @@ class ThemisHRCrew:
         )
 
     @agent
-    def classification_agent(self) -> Agent:
+    def router_agent(self) -> Agent:
         return Agent(
-            config=self.agents_config['classification_agent'],
+            config=self.agents_config['router_agent'],
             llm=self.llm,
             verbose=True
         )
 
     @agent
-    def knowledge_agent(self) -> Agent:
+    def expert_agent(self) -> Agent:
         return Agent(
-            config=self.agents_config['knowledge_agent'],
+            config=self.agents_config['expert_agent'],
             llm=self.llm,
             verbose=True
         )
@@ -77,14 +77,14 @@ class ThemisHRCrew:
     def classification_task(self) -> Task:
         return Task(
             config=self.tasks_config['classification_task'],
-            agent=self.classification_agent()
+            agent=self.router_agent()
         )
 
     @task
     def knowledge_task(self) -> Task:
         return Task(
             config=self.tasks_config['knowledge_task'],
-            agent=self.knowledge_agent()
+            agent=self.expert_agent()
         )
 
     @task

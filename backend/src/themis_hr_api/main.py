@@ -11,7 +11,7 @@ from themis_hr_api.db.database import get_db, engine, Base
 from themis_hr_api.models import chat
 from fastapi.middleware.cors import CORSMiddleware
 from themis_hr_api.orchestration.crew import ThemisHRCrew
-from themis_hr_api.knowledge.mock import KNOWLEDGE_BASE_MOCK
+
 
 # Logger setup
 logging.basicConfig(level=settings.log_level)
@@ -60,10 +60,36 @@ async def init_chat(request: ChatRequest, db: Session = Depends(get_db)):
     db.commit()
 
     try:
-        # Prepara a entrada da Inteligência Artificial (CrewAI)
+        # Prepara a entrada Inicial do Router
+        # Em um cenário ideal de "Agentic Routing" o Router Agent retornaria qual documento ele precisou.
+        # Aqui, como o KICKOFF é fixo para a pipeline e sequencial, a LLM decidirá em run-time cruzando os Mocks em memoria:
+        
+        from themis_hr_api.knowledge.ferias import KNOWLEDGE_BASE_MOCK as kb_ferias
+        from themis_hr_api.knowledge.admissao_contratos import KNOWLEDGE_BASE_MOCK as kb_admissao
+        from themis_hr_api.knowledge.jornada_feriados import KNOWLEDGE_BASE_MOCK as kb_jornada
+        from themis_hr_api.knowledge.remuneracao import KNOWLEDGE_BASE_MOCK as kb_remuneracao
+        from themis_hr_api.knowledge.rescisao import KNOWLEDGE_BASE_MOCK as kb_rescisao
+
+        mega_database = f"""
+        [Base 1: Férias e Licenças]
+        {kb_ferias}
+
+        [Base 2: Admissão e Estágio]
+        {kb_admissao}
+
+        [Base 3: Jornada e DSR]
+        {kb_jornada}
+
+        [Base 4: Remuneração e Benefícios]
+        {kb_remuneracao}
+
+        [Base 5: Rescisão]
+        {kb_rescisao}
+        """
+
         inputs = {
             'user_message': request.message,
-            'knowledge_base': KNOWLEDGE_BASE_MOCK
+            'knowledge_base': mega_database
         }
         
         # Executa a Crew (CUIDADO: É um processo demorado chamando LLMs sequenciais)

@@ -9,6 +9,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { AvatarModule } from 'primeng/avatar';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { MessageModule } from 'primeng/message';
 
 @Component({
   selector: 'app-chat',
@@ -20,7 +21,8 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
     InputTextModule,
     AvatarModule,
     InputGroupModule,
-    InputGroupAddonModule
+    InputGroupAddonModule,
+    MessageModule
   ],
   templateUrl: './chat.html',
   styleUrl: './app.scss'
