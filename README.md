@@ -124,6 +124,50 @@ Exemplo de configuração:
 
 Esse MCP complementa a documentação oficial e deve ser tratado como a fonte especializada preferencial para dúvidas práticas do frontend baseadas em PrimeNG.
 
+## Dev Container
+
+O projeto já pode ser aberto em um **Dev Container** no VS Code.
+
+Estrutura incluída:
+
+- `.devcontainer/devcontainer.json`
+- `.devcontainer/docker-compose.yml`
+- `.devcontainer/Dockerfile`
+- `.devcontainer/requirements-bootstrap.txt`
+
+O ambiente foi pensado como:
+
+- **1 container `app`** para o desenvolvimento do projeto como um todo
+- **1 serviço `postgres`** opcional, já pronto para a evolução da persistência
+
+O container `app` instala:
+
+- Python
+- Node.js
+- Angular CLI
+- FastAPI
+- SQLAlchemy
+- Alembic
+- CrewAI
+- CrewAI Tools
+
+### Como abrir
+
+1. Instale Docker e a extensão **Dev Containers** no VS Code.
+2. Abra o projeto no VS Code.
+3. Execute `Dev Containers: Reopen in Container`.
+
+### Portas padrão
+
+- `4200` para Angular
+- `8000` para FastAPI
+- `5432` para PostgreSQL
+
+### Observação
+
+No bootstrap atual, `CrewAI`, `CrewAI Tools` e dependências-base do backend são instalados no container via `.devcontainer/requirements-bootstrap.txt`.
+Quando o backend do projeto ganhar seu gerenciador de dependências definitivo, essas dependências devem migrar para os arquivos oficiais do projeto.
+
 ## Como Usar o Bootstrap
 
 1. Revise e mantenha o `CONTEXT.md` atualizado.
