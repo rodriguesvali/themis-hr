@@ -19,6 +19,7 @@ O objetivo do Themis HR é oferecer um help desk inteligente para colaboradores,
 - **Frontend:** Angular
 - **Backend:** Python com FastAPI
 - **Motor multiagente:** CrewAI
+- **Versionamento de banco:** Alembic
 - **Metodologia:** AAMAD
 
 O contexto funcional inicial está em [CONTEXT.md](CONTEXT.md).
@@ -98,6 +99,7 @@ Os agentes de projeto trabalham de forma sequencial, usando os artefatos anterio
 - O frontend do Themis HR é **Angular**, não Next.js.
 - O backend expõe APIs em **FastAPI**, não API routes de frontend.
 - CrewAI deve ser configurado de forma auditável e orientada por arquivos.
+- Quando houver banco de dados, o versionamento de schema deve ser feito com **Alembic**.
 
 ## Como Usar o Bootstrap
 

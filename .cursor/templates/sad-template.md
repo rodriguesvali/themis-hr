@@ -9,6 +9,7 @@ The architecture must stay aligned with the current project context:
 - Frontend in **Angular**
 - Backend in **Python + FastAPI**
 - Multi-agent runtime in **CrewAI**
+- Database schema versioning with **Alembic**
 - Knowledge retrieval and policy guidance as core capabilities
 - Human escalation as an explicit workflow concern
 
@@ -72,6 +73,8 @@ Specify:
 - Endpoint design for MVP flows
 - Validation, error handling, and observability approach
 - Separation between API layer, orchestration layer, and domain logic
+- persistence boundaries for the MVP
+- migration strategy using Alembic
 
 ### 7. Multi-Agent Architecture
 
@@ -108,6 +111,8 @@ Describe:
 - retrieval approach
 - data sensitivity and privacy concerns
 - retention boundaries for MVP
+- whether the MVP uses SQLite, PostgreSQL, or another store and why
+- how Alembic will manage schema evolution
 
 ### 9. Security and Compliance
 

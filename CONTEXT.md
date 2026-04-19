@@ -21,7 +21,10 @@ Construir uma solução de help desk para RH utilizando:
 - **Frontend**: Angular
 - **Backend**: Python (FastAPI)
 - **Motor multiagente**: CrewAI
+- **Versionamento do banco**: Alembic
 - **Metodologia de desenvolvimento**: AAMAD
+
+Para o MVP, a persistência de dados pode existir de forma mínima e controlada, principalmente para suportar trilha de atendimento, contexto conversacional, escalonamentos e evolução segura do schema.
 
 ---
 

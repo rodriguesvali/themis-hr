@@ -32,6 +32,7 @@ Checklist operacional para conduzir o bootstrap do Themis HR com AAMAD, do disco
   - [ ] Angular no frontend
   - [ ] FastAPI no backend
   - [ ] CrewAI para orquestração multiagente
+  - [ ] Alembic para versionamento de banco
 
 ---
 
@@ -77,6 +78,8 @@ Checklist operacional para conduzir o bootstrap do Themis HR com AAMAD, do disco
 - [ ] Confirmar que o agente:
   - [ ] estrutura o backend FastAPI
   - [ ] implementa a base do CrewAI e dos agentes do MVP
+  - [ ] define a estratégia de persistência mínima do MVP, quando aplicável
+  - [ ] usa Alembic para versionamento do schema
   - [ ] expõe endpoints HTTP para conversa/atendimento
   - [ ] documenta decisões em `project-context/2.build/backend.md`
 
