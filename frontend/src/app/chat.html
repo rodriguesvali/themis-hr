@@ -1,65 +1,78 @@
 <div class="flex flex-col h-screen w-full bg-surface-50">
-    <!-- Header -->
-    <header class="flex items-center justify-between p-4 bg-white shadow-sm border-b border-surface-200">
-        <div class="flex items-center gap-2">
-            <i class="pi pi-briefcase text-primary-500 text-2xl"></i>
-            <h1 class="text-xl font-bold text-surface-900 m-0">Themis HR</h1>
-            <span class="bg-primary-100 text-primary-700 text-xs px-2 py-1 rounded-md ml-2 font-semibold">Beta</span>
-        </div>
-        <div class="flex items-center gap-3">
-            <p-button icon="pi pi-bell" [rounded]="true" [text]="true" severity="secondary"></p-button>
-            <p-avatar label="U" shape="circle" styleClass="bg-primary-500 text-white font-bold"></p-avatar>
-        </div>
-    </header>
+    <!-- Header: Substituindo header nativo por Toolbar -->
+    <p-toolbar class="bg-white shadow-sm border-b border-surface-200 !rounded-none p-4">
+        <ng-template pTemplate="start">
+            <div class="flex items-center gap-2">
+                <i class="pi pi-briefcase text-primary-500 text-2xl"></i>
+                <h1 class="text-xl font-bold text-surface-900 m-0">Themis HR</h1>
+                <p-badge value="Beta" severity="info" styleClass="ml-2"></p-badge>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="end">
+            <div class="flex items-center gap-3">
+                <p-button icon="pi pi-bell" [rounded]="true" [text]="true" severity="secondary"></p-button>
+                <p-avatar label="U" shape="circle" styleClass="bg-primary-500 text-white font-bold"></p-avatar>
+            </div>
+        </ng-template>
+    </p-toolbar>
 
     <!-- Main Content (Chat Area) -->
     <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 flex justify-center">
         <div class="w-full max-w-4xl flex flex-col gap-4">
             
-            <!-- Welcome Message (Fixo) -->
+            <!-- Welcome Message (Fixo em Card) -->
             <div class="flex flex-col items-start gap-2">
-                <div class="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm border border-surface-200 max-w-[80%]">
-                    <p class="m-0 text-surface-800 leading-relaxed">
-                        Olá! Eu sou a <strong>Themis</strong>, sua assistente inteligente de Recursos Humanos. 
-                        Como posso ajudar você hoje? (Ex: Como pedir férias? Qual a política de home office?)
-                    </p>
+                <div class="max-w-[80%]">
+                    <p-card class="shadow-sm border border-surface-200">
+                        <p class="m-0 text-surface-800 leading-relaxed">
+                            Olá! Eu sou a <strong>Themis</strong>, sua assistente inteligente de Recursos Humanos. 
+                            Como posso ajudar você hoje? (Ex: Como pedir férias? Qual a política de home office?)
+                        </p>
+                    </p-card>
                 </div>
                 <span class="text-xs text-surface-500 ml-2">Themis Agent</span>
             </div>
 
-            <!-- Loop Mapeado nos Signals do Service -->
-            <div *ngFor="let msg of chatService.messages()" [ngClass]="msg.role === 'user' ? 'items-end' : 'items-start'" class="flex flex-col gap-2">
-                <div class="max-w-[80%]">
-                    <p-message [severity]="msg.role === 'user' ? 'success' : 'secondary'">
-                        <div style="color: inherit;" class="m-0 leading-relaxed" *ngIf="msg.role === 'user'">
-                            {{ msg.content }}
-                        </div>
-                        <div class="m-0 leading-relaxed marked-container" *ngIf="msg.role !== 'user'" [innerHTML]="msg.content | markdown">
-                        </div>
-                    </p-message>
+            <!-- Loop Mapeado nos Signals do Service com a nova Control Flow Syntax -->
+            @for (msg of chatService.messages(); track msg.created_at) {
+                <div [ngClass]="msg.role === 'user' ? 'items-end' : 'items-start'" class="flex flex-col gap-2">
+                    <div class="max-w-[80%]">
+                        <p-message [severity]="msg.role === 'user' ? 'success' : 'secondary'">
+                            @if (msg.role === 'user') {
+                                <div style="color: inherit;" class="m-0 leading-relaxed">
+                                    {{ msg.content }}
+                                </div>
+                            } @else {
+                                <div class="m-0 leading-relaxed marked-container" [innerHTML]="msg.content | markdown">
+                                </div>
+                            }
+                        </p-message>
+                    </div>
+                    <span [ngClass]="msg.role === 'user' ? 'mr-2' : 'ml-2'" class="text-xs text-surface-500">
+                        {{ msg.role === 'user' ? 'Você' : 'Themis Agent' }}
+                    </span>
                 </div>
-                <span [ngClass]="msg.role === 'user' ? 'mr-2' : 'ml-2'" class="text-xs text-surface-500">
-                    {{ msg.role === 'user' ? 'Você' : 'Themis Agent' }}
-                </span>
-            </div>
+            }
 
-            <!-- Typing Indicator -->
-            <div *ngIf="chatService.isTyping()" class="flex flex-col items-start gap-2">
-                <div class="max-w-[80%]">
-                    <p-message severity="secondary">
-                        <div class="flex items-center gap-2">
-                            <i class="pi pi-spinner pi-spin text-primary-500"></i>
-                            <span class="text-surface-600 text-sm italic">Themis está digitando...</span>
-                        </div>
-                    </p-message>
+            <!-- Typing Indicator com Control Flow -->
+            @if (chatService.isTyping()) {
+                <div class="flex flex-col items-start gap-2">
+                    <div class="max-w-[80%]">
+                        <p-message severity="secondary">
+                            <div class="flex items-center gap-2">
+                                <i class="pi pi-spinner pi-spin text-primary-500"></i>
+                                <span class="text-surface-600 text-sm italic">Themis está digitando...</span>
+                            </div>
+                        </p-message>
+                    </div>
                 </div>
-            </div>
+            }
 
         </div>
     </main>
 
-    <!-- Footer Input -->
-    <footer class="p-4 bg-white border-t border-surface-200 flex justify-center">
+    <!-- Footer Input (Substituindo footer nativo por Panel Footer Area) -->
+    <div class="p-4 bg-white border-t border-surface-200 flex justify-center">
         <div class="w-full max-w-4xl">
             <p-inputgroup>
                 <p-inputgroup-addon>
@@ -80,5 +93,5 @@
                 </p-button>
             </p-inputgroup>
         </div>
-    </footer>
+    </div>
 </div>

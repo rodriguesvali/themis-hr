@@ -5,7 +5,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { routes } from './app.routes';
 
 import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeuix/themes/aura';
+import Lara from '@primeuix/themes/lara';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -14,7 +14,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     providePrimeNG({
         theme: {
-            preset: Aura,
+            preset: Lara,
             options: {
                 cssLayer: {
                     name: 'primeng',
