@@ -105,6 +105,25 @@ Os agentes de projeto trabalham de forma sequencial, usando os artefatos anterio
 - CrewAI deve ser configurado de forma auditável e orientada por arquivos.
 - Quando houver banco de dados, o versionamento de schema deve ser feito com **Alembic**.
 
+## MCP do PrimeNG
+
+Quando disponível no ambiente, o frontend deve usar o **MCP Server do PrimeNG** como apoio de implementação para consultar componentes, APIs e padrões da biblioteca.
+
+Exemplo de configuração:
+
+```json
+{
+  "servers": {
+    "primeng": {
+      "command": "npx",
+      "args": ["-y", "@primeng/mcp"]
+    }
+  }
+}
+```
+
+Esse MCP complementa a documentação oficial e deve ser tratado como a fonte especializada preferencial para dúvidas práticas do frontend baseadas em PrimeNG.
+
 ## Como Usar o Bootstrap
 
 1. Revise e mantenha o `CONTEXT.md` atualizado.

@@ -40,3 +40,7 @@ Os agentes do produto Themis HR serão implementados no backend e orquestrados s
 
 - Cursor: `.cursor/agents/`
 - VS Code / GitHub Copilot: `.github/agents/`
+
+## Frontend Tooling Note
+
+Quando o ambiente disponibilizar o MCP do PrimeNG, o agente `@frontend-eng` deve usá-lo como apoio principal para implementação da UI baseada em PrimeNG.

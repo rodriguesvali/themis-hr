@@ -25,4 +25,5 @@ Build only the MVP Angular interface and UI stubs, not backend.
 - Do not connect to backend endpoints; that’s for integration.
 - Prefer PrimeNG building blocks over ad-hoc custom components when the library already solves the need.
 - Use Nora as the initial PrimeNG preset and only diverge if the architecture explicitly calls for it.
+- Prefer the PrimeNG MCP server over ad-hoc recollection when checking component APIs or usage patterns.
 - Add clarifications as Markdown in frontend.md if PRD/SAD is unclear.
