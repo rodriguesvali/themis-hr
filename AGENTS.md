@@ -2,6 +2,16 @@
 
 Este projeto usa o AAMAD como estrutura de desenvolvimento multiagente, adaptado para o contexto do Themis HR.
 
+## O Que Este Arquivo Descreve
+
+As personas abaixo pertencem à **camada de desenvolvimento** do projeto.
+
+- Elas orientam o trabalho no IDE
+- Elas não são os agentes de negócio do help desk
+- Elas não representam a runtime CrewAI do produto final
+
+Os agentes do produto Themis HR serão implementados no backend e orquestrados separadamente com CrewAI.
+
 ## Agent Personas
 
 - **@product-mgr** — Product Manager: conduz discovery, gera `mr.md` e `prd.md`

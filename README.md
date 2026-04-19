@@ -23,6 +23,25 @@ O objetivo do Themis HR é oferecer um help desk inteligente para colaboradores,
 
 O contexto funcional inicial está em [CONTEXT.md](CONTEXT.md).
 
+## Duas Camadas de Agentes
+
+Este projeto usa "agentes" em dois sentidos diferentes:
+
+- **Agentes de desenvolvimento**
+  - vivem no bootstrap do AAMAD
+  - são usados no IDE como personas e fluxo de trabalho
+  - ajudam a produzir requisitos, arquitetura, código e testes
+
+- **Agentes do produto**
+  - fazem parte do Themis HR em si
+  - serão implementados no backend
+  - serão orquestrados com CrewAI para atender o help desk de RH
+
+Resumo prático:
+
+- **VS Code + AAMAD** ajudam a construir o sistema
+- **FastAPI + CrewAI** ajudam o sistema a operar
+
 ## Estrutura do Repositório
 
 ```text
@@ -87,6 +106,8 @@ Os agentes de projeto trabalham de forma sequencial, usando os artefatos anterio
 3. Gere `sad.md` com `@system-arch`.
 4. Siga o [CHECKLIST.md](CHECKLIST.md) para a fase de build.
 5. Registre decisões e saídas nos artefatos versionados em `project-context/`.
+
+Durante essa fase, a interação principal acontece no IDE. O bootstrap do AAMAD organiza como você conduz o desenvolvimento; ele não substitui a runtime CrewAI do produto.
 
 ## IDEs
 
