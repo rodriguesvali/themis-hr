@@ -8,7 +8,6 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { AvatarModule } from 'primeng/avatar';
 import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { MessageModule } from 'primeng/message';
 import { ToolbarModule } from 'primeng/toolbar';
 import { BadgeModule } from 'primeng/badge';
@@ -24,7 +23,6 @@ import { MarkdownPipe } from './markdown.pipe';
     InputTextModule,
     AvatarModule,
     InputGroupModule,
-    InputGroupAddonModule,
     MessageModule,
     ToolbarModule,
     BadgeModule,

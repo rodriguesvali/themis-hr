@@ -1,9 +1,6 @@
 .themis-chat-shell {
   height: 100vh;
   overflow: hidden;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--p-primary-50) 55%, transparent) 0%, transparent 20%),
-    transparent;
 }
 
 .themis-chat-main {
@@ -39,35 +36,8 @@
   align-items: flex-end;
 }
 
-.themis-chat-intro :is(.p-card, .p-message),
-.themis-chat-message .p-message {
-  border-radius: 1.25rem;
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
-}
-
-.themis-chat-intro .p-card {
-  background: color-mix(in srgb, var(--p-surface-0) 92%, var(--p-primary-50) 8%);
-}
-
-.themis-chat-user .p-message {
-  background: color-mix(in srgb, var(--p-primary-100) 78%, var(--p-surface-0) 22%);
-}
-
-.themis-chat-agent .p-message,
-.themis-chat-typing .p-message {
-  background: color-mix(in srgb, var(--p-surface-0) 94%, var(--p-surface-100) 6%);
-}
-
-.themis-chat-composer {
-  background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--p-surface-0) 94%, transparent) 28%, var(--p-surface-0) 100%);
-}
-
 .themis-chat-input {
   overflow: hidden;
-  border: 1px solid var(--p-surface-200);
-  border-radius: 1.25rem;
-  background: var(--p-surface-0);
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.07);
 }
 
 .themis-chat-input .p-inputtext,

@@ -1,16 +1,16 @@
 <div class="themis-chat-shell flex w-full flex-col">
-    <p-toolbar class="border-b border-surface-200 bg-white px-4 py-4 shadow-xs backdrop-blur-sm md:px-6">
+    <p-toolbar class="px-4 py-4 md:px-6">
         <ng-template pTemplate="start">
             <div class="flex items-center gap-3">
-                <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-100 text-primary-700 shadow-xs">
-                    <i class="pi pi-briefcase text-xl"></i>
+                <div class="flex h-11 w-11 items-center justify-center">
+                    <i class="pi pi-briefcase"></i>
                 </div>
                 <div class="flex flex-col">
                     <div class="flex items-center gap-2">
-                        <h1 class="m-0 text-lg font-semibold tracking-tight text-surface-900 md:text-xl">Themis HR</h1>
+                        <span class="font-semibold">Themis HR</span>
                         <p-badge value="Beta" severity="info"></p-badge>
                     </div>
-                    <span class="text-sm text-surface-500">Atendimento inteligente para duvidas de RH</span>
+                    <small>Atendimento inteligente para duvidas de RH</small>
                 </div>
             </div>
         </ng-template>
@@ -23,23 +23,23 @@
                     severity="secondary"
                     styleClass="hidden sm:inline-flex">
                 </p-button>
-                <p-avatar label="U" shape="circle" styleClass="bg-primary-500 text-white font-bold shadow-xs"></p-avatar>
+                <p-avatar label="U" shape="circle"></p-avatar>
             </div>
         </ng-template>
     </p-toolbar>
 
     <main class="themis-chat-main flex-1 px-4 pb-3 pt-3 md:px-6 md:pb-4 md:pt-4">
         <div class="mx-auto flex h-full w-full max-w-6xl flex-col">
-            <section class="themis-chat-panel rounded-4xl border border-surface-200 bg-white p-3 shadow-xs backdrop-blur-sm md:p-4">
+            <section class="themis-chat-panel p-3 md:p-4">
                 <div class="themis-chat-thread flex flex-col gap-4 px-3 py-3 md:px-4 md:py-4">
                     <div class="themis-chat-intro themis-chat-agent flex flex-col gap-2">
                         <p-message severity="secondary">
-                            <div class="marked-container m-0 leading-relaxed text-surface-800">
+                            <div class="marked-container m-0">
                                 Ola! Eu sou a <strong>Themis</strong>, sua assistente inteligente de Recursos Humanos.
                                 Posso ajudar com ferias, politicas internas, holerite, beneficios e escalonamento para um analista quando necessario.
                             </div>
                         </p-message>
-                        <span class="ml-2 text-xs text-surface-500">Themis Agent</span>
+                        <small class="ml-2">Themis Agent</small>
                     </div>
 
                     @for (msg of chatService.messages(); track msg.created_at) {
@@ -48,17 +48,17 @@
                             class="themis-chat-message flex flex-col gap-2">
                             <p-message [severity]="msg.role === 'user' ? 'success' : 'secondary'">
                                 @if (msg.role === 'user') {
-                                    <div style="color: inherit;" class="m-0 leading-relaxed">
+                                    <div style="color: inherit;" class="m-0">
                                         {{ msg.content }}
                                     </div>
                                 } @else {
-                                    <div class="marked-container m-0 leading-relaxed" [innerHTML]="msg.content | markdown">
+                                    <div class="marked-container m-0" [innerHTML]="msg.content | markdown">
                                     </div>
                                 }
                             </p-message>
-                            <span [ngClass]="msg.role === 'user' ? 'mr-2' : 'ml-2'" class="text-xs text-surface-500">
+                            <small [ngClass]="msg.role === 'user' ? 'mr-2' : 'ml-2'">
                                 {{ msg.role === 'user' ? 'Voce' : 'Themis Agent' }}
-                            </span>
+                            </small>
                         </div>
                     }
 
@@ -67,8 +67,8 @@
                             <div class="w-full max-w-xs sm:max-w-sm">
                                 <p-message severity="secondary">
                                     <div class="flex items-center gap-2">
-                                        <i class="pi pi-spinner pi-spin text-primary-500"></i>
-                                        <span class="text-sm italic text-surface-600">Themis esta digitando...</span>
+                                        <i class="pi pi-spinner pi-spin"></i>
+                                        <span>Themis esta digitando...</span>
                                     </div>
                                 </p-message>
                             </div>
@@ -87,7 +87,7 @@
                     [(ngModel)]="userInput"
                     (keyup.enter)="sendMessage()"
                     placeholder="Digite sua duvida de RH aqui..."
-                    class="w-full bg-white text-surface-900" />
+                    class="w-full" />
                 <p-button
                     (onClick)="sendMessage()"
                     [disabled]="!userInput.trim() || chatService.isTyping()"
