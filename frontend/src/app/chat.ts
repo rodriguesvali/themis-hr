@@ -11,8 +11,6 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { MessageModule } from 'primeng/message';
 import { ToolbarModule } from 'primeng/toolbar';
-import { PanelModule } from 'primeng/panel';
-import { CardModule } from 'primeng/card';
 import { BadgeModule } from 'primeng/badge';
 import { MarkdownPipe } from './markdown.pipe';
 
@@ -29,8 +27,6 @@ import { MarkdownPipe } from './markdown.pipe';
     InputGroupAddonModule,
     MessageModule,
     ToolbarModule,
-    PanelModule,
-    CardModule,
     BadgeModule,
     MarkdownPipe
   ],

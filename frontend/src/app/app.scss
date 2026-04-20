@@ -1,12 +1,28 @@
 .themis-chat-shell {
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background:
     linear-gradient(180deg, color-mix(in srgb, var(--p-primary-50) 55%, transparent) 0%, transparent 20%),
     transparent;
 }
 
 .themis-chat-main {
+  min-height: 0;
+  overflow: hidden;
   scrollbar-gutter: stable both-edges;
+}
+
+.themis-chat-panel {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  flex-direction: column;
+}
+
+.themis-chat-thread {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow-y: auto;
 }
 
 .themis-chat-intro,
@@ -43,30 +59,25 @@
 }
 
 .themis-chat-composer {
-  backdrop-filter: blur(14px);
-  background: color-mix(in srgb, var(--p-surface-0) 88%, transparent);
+  background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--p-surface-0) 94%, transparent) 28%, var(--p-surface-0) 100%);
 }
 
-.themis-chat-composer .p-inputgroup {
+.themis-chat-input {
   overflow: hidden;
   border: 1px solid var(--p-surface-200);
-  border-radius: 1rem;
-  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+  border-radius: 1.25rem;
+  background: var(--p-surface-0);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.07);
 }
 
-.themis-chat-composer .p-inputgroup-addon,
-.themis-chat-composer .p-inputtext,
-.themis-chat-composer .p-button {
+.themis-chat-input .p-inputtext,
+.themis-chat-input .p-button {
   border: 0;
 }
 
-.themis-chat-composer .p-inputgroup-addon {
-  background: color-mix(in srgb, var(--p-surface-100) 85%, var(--p-surface-0) 15%);
-  color: var(--p-surface-500);
-}
-
-.themis-chat-composer .p-inputtext {
-  padding-block: 1rem;
+.themis-chat-input .p-inputtext {
+  padding: 0.875rem 1rem;
+  box-shadow: none;
 }
 
 .marked-container > :first-child {
