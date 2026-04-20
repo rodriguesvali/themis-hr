@@ -10,19 +10,15 @@
 }
 
 .themis-chat-panel {
-  display: flex;
   flex: 1 1 auto;
   min-height: 0;
-  flex-direction: column;
 }
 
-.themis-chat-panel .p-card-body,
-.themis-chat-panel .p-card-content {
+.themis-chat-panel .p-panel-content {
   display: flex;
-  min-height: 0;
-  flex: 1 1 auto;
   flex-direction: column;
-  padding: 0;
+  min-height: 0;
+  height: 100%;
 }
 
 .themis-chat-thread {
@@ -47,20 +43,6 @@
 
 .themis-chat-user {
   align-items: flex-end;
-}
-
-.themis-chat-input {
-  overflow: hidden;
-}
-
-.themis-chat-input .p-inputtext,
-.themis-chat-input .p-button {
-  border: 0;
-}
-
-.themis-chat-input .p-inputtext {
-  padding: 0.875rem 1rem;
-  box-shadow: none;
 }
 
 .marked-container > :first-child {

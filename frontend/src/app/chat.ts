@@ -7,11 +7,10 @@ import { ChatService } from './chat.service';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { AvatarModule } from 'primeng/avatar';
-import { InputGroupModule } from 'primeng/inputgroup';
 import { MessageModule } from 'primeng/message';
 import { ToolbarModule } from 'primeng/toolbar';
 import { BadgeModule } from 'primeng/badge';
-import { CardModule } from 'primeng/card';
+import { PanelModule } from 'primeng/panel';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { MarkdownPipe } from './markdown.pipe';
 
@@ -24,11 +23,10 @@ import { MarkdownPipe } from './markdown.pipe';
     ButtonModule,
     InputTextModule,
     AvatarModule,
-    InputGroupModule,
     MessageModule,
     ToolbarModule,
     BadgeModule,
-    CardModule,
+    PanelModule,
     ScrollPanelModule,
     MarkdownPipe
   ],

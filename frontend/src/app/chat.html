@@ -7,7 +7,7 @@
                 </div>
                 <div class="flex flex-col">
                     <div class="flex items-center gap-2">
-                        <span class="font-semibold">Themis HR</span>
+                        <span>Themis HR</span>
                         <p-badge value="Beta" severity="info"></p-badge>
                     </div>
                     <small>Atendimento inteligente para duvidas de RH</small>
@@ -30,7 +30,7 @@
 
     <main class="themis-chat-main flex-1 px-4 pb-3 pt-3 md:px-6 md:pb-4 md:pt-4">
         <div class="mx-auto flex h-full w-full max-w-6xl flex-col">
-            <p-card class="themis-chat-panel">
+            <p-panel class="themis-chat-panel">
                 <p-scrollpanel [style]="{ width: '100%', height: '100%' }" class="themis-chat-thread">
                     <div class="flex flex-col gap-4 px-3 py-3 md:px-4 md:py-4">
                     <div class="themis-chat-intro themis-chat-agent flex flex-col gap-2">
@@ -49,7 +49,7 @@
                             class="themis-chat-message flex flex-col gap-2">
                             <p-message [severity]="msg.role === 'user' ? 'success' : 'secondary'">
                                 @if (msg.role === 'user') {
-                                    <div style="color: inherit;" class="m-0">
+                                    <div class="m-0">
                                         {{ msg.content }}
                                     </div>
                                 } @else {
@@ -77,19 +77,19 @@
                     }
                     </div>
                 </p-scrollpanel>
-            </p-card>
+            </p-panel>
         </div>
     </main>
 
     <div class="themis-chat-composer px-4 py-2 md:px-6 md:py-3">
         <div class="mx-auto w-full max-w-6xl">
-            <p-inputgroup class="themis-chat-input">
+            <div class="flex items-center gap-3">
                 <input
                     pInputText
                     [(ngModel)]="userInput"
                     (keyup.enter)="sendMessage()"
                     placeholder="Digite sua duvida de RH aqui..."
-                    class="w-full" />
+                    class="w-full flex-1" />
                 <p-button
                     (onClick)="sendMessage()"
                     [disabled]="!userInput.trim() || chatService.isTyping()"
@@ -97,7 +97,7 @@
                     icon="pi pi-send"
                     severity="primary">
                 </p-button>
-            </p-inputgroup>
+            </div>
         </div>
     </div>
 </div>
