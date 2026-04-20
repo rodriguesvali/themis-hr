@@ -1,0 +1,85 @@
+.themis-chat-shell {
+  min-height: 100vh;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--p-primary-50) 55%, transparent) 0%, transparent 20%),
+    transparent;
+}
+
+.themis-chat-main {
+  scrollbar-gutter: stable both-edges;
+}
+
+.themis-chat-intro,
+.themis-chat-message {
+  max-width: min(100%, 46rem);
+}
+
+.themis-chat-agent,
+.themis-chat-typing {
+  align-items: flex-start;
+}
+
+.themis-chat-user {
+  align-items: flex-end;
+}
+
+.themis-chat-intro :is(.p-card, .p-message),
+.themis-chat-message .p-message {
+  border-radius: 1.25rem;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+}
+
+.themis-chat-intro .p-card {
+  background: color-mix(in srgb, var(--p-surface-0) 92%, var(--p-primary-50) 8%);
+}
+
+.themis-chat-user .p-message {
+  background: color-mix(in srgb, var(--p-primary-100) 78%, var(--p-surface-0) 22%);
+}
+
+.themis-chat-agent .p-message,
+.themis-chat-typing .p-message {
+  background: color-mix(in srgb, var(--p-surface-0) 94%, var(--p-surface-100) 6%);
+}
+
+.themis-chat-composer {
+  backdrop-filter: blur(14px);
+  background: color-mix(in srgb, var(--p-surface-0) 88%, transparent);
+}
+
+.themis-chat-composer .p-inputgroup {
+  overflow: hidden;
+  border: 1px solid var(--p-surface-200);
+  border-radius: 1rem;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+}
+
+.themis-chat-composer .p-inputgroup-addon,
+.themis-chat-composer .p-inputtext,
+.themis-chat-composer .p-button {
+  border: 0;
+}
+
+.themis-chat-composer .p-inputgroup-addon {
+  background: color-mix(in srgb, var(--p-surface-100) 85%, var(--p-surface-0) 15%);
+  color: var(--p-surface-500);
+}
+
+.themis-chat-composer .p-inputtext {
+  padding-block: 1rem;
+}
+
+.marked-container > :first-child {
+  margin-top: 0;
+}
+
+.marked-container > :last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 640px) {
+  .themis-chat-intro,
+  .themis-chat-message {
+    max-width: 100%;
+  }
+}

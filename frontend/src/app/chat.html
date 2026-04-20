@@ -1,97 +1,146 @@
-<div class="flex flex-col h-screen w-full bg-surface-50">
-    <!-- Header: Substituindo header nativo por Toolbar -->
-    <p-toolbar>
+<div class="themis-chat-shell flex w-full flex-col">
+    <p-toolbar class="border-b border-surface-200 bg-white px-4 py-4 shadow-sm backdrop-blur md:px-6">
         <ng-template pTemplate="start">
-            <div class="flex items-center gap-2">
-                <i class="pi pi-briefcase text-primary-500 text-2xl"></i>
-                <h1 class="text-xl font-bold m-0">Themis HR</h1>
-                <p-badge value="Beta" severity="info" styleClass="ml-2"></p-badge>
+            <div class="flex items-center gap-3">
+                <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-100 text-primary-700 shadow-sm">
+                    <i class="pi pi-briefcase text-xl"></i>
+                </div>
+                <div class="flex flex-col">
+                    <div class="flex items-center gap-2">
+                        <h1 class="m-0 text-lg font-semibold tracking-tight text-surface-900 md:text-xl">Themis HR</h1>
+                        <p-badge value="Beta" severity="info"></p-badge>
+                    </div>
+                    <span class="text-sm text-surface-500">Atendimento inteligente para duvidas de RH</span>
+                </div>
             </div>
         </ng-template>
         <ng-template pTemplate="end">
-            <div class="flex items-center gap-3">
-                <p-button icon="pi pi-bell" [rounded]="true" [text]="true" severity="secondary"></p-button>
-                <p-avatar label="U" shape="circle"></p-avatar>
+            <div class="flex items-center gap-2 md:gap-3">
+                <p-button
+                    icon="pi pi-bell"
+                    [rounded]="true"
+                    [text]="true"
+                    severity="secondary"
+                    styleClass="hidden sm:inline-flex">
+                </p-button>
+                <p-avatar label="U" shape="circle" styleClass="bg-primary-500 text-white font-bold shadow-sm"></p-avatar>
             </div>
         </ng-template>
     </p-toolbar>
 
-    <!-- Main Content (Chat Area) -->
-    <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 flex justify-center">
-        <div class="w-full max-w-4xl flex flex-col gap-4">
-            
-            <!-- Welcome Message (Fixo em Card) -->
-            <div class="flex flex-col items-start gap-2">
-                <div class="max-w-[80%]">
-                    <p-card>
-                        <p class="m-0 leading-relaxed">
-                            Olá! Eu sou a <strong>Themis</strong>, sua assistente inteligente de Recursos Humanos. 
-                            Como posso ajudar você hoje? (Ex: Como pedir férias? Qual a política de home office?)
-                        </p>
-                    </p-card>
+    <main class="themis-chat-main flex-1 overflow-y-auto px-4 pb-6 pt-6 md:px-6 md:pb-8 md:pt-8">
+        <div class="mx-auto flex w-full max-w-6xl flex-col gap-6">
+            <section class="grid gap-4 lg:grid-cols-[minmax(0,1.8fr)_minmax(18rem,0.9fr)]">
+                <div class="rounded-[1.75rem] border border-surface-200 bg-white p-5 shadow-sm backdrop-blur md:p-6">
+                    <span class="text-xs font-semibold uppercase tracking-[0.24em] text-primary-600">Workspace</span>
+                    <h2 class="mt-3 text-2xl font-semibold tracking-tight text-surface-900 md:text-3xl">
+                        Resolva duvidas de RH com contexto, rastreabilidade e escalonamento humano.
+                    </h2>
+                    <p class="mt-3 max-w-2xl text-sm leading-6 text-surface-600 md:text-base">
+                        A Themis interpreta a solicitacao do colaborador, consulta a base de conhecimento e responde com transparência quando precisa escalar.
+                    </p>
                 </div>
-                <span class="text-xs text-surface-500 ml-2">Themis Agent</span>
-            </div>
-
-            <!-- Loop Mapeado nos Signals do Service com a nova Control Flow Syntax -->
-            @for (msg of chatService.messages(); track msg.created_at) {
-                <div [ngClass]="msg.role === 'user' ? 'items-end' : 'items-start'" class="flex flex-col gap-2">
-                    <div class="max-w-[80%]">
-                        <p-message [severity]="msg.role === 'user' ? 'success' : 'secondary'">
-                            @if (msg.role === 'user') {
-                                <div style="color: inherit;" class="m-0 leading-relaxed">
-                                    {{ msg.content }}
-                                </div>
-                            } @else {
-                                <div class="m-0 leading-relaxed marked-container" [innerHTML]="msg.content | markdown">
-                                </div>
-                            }
-                        </p-message>
+                <div class="rounded-[1.75rem] border border-surface-200 bg-surface-0 p-5 shadow-sm">
+                    <span class="text-xs font-semibold uppercase tracking-[0.24em] text-surface-500">Exemplos</span>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="rounded-full border border-surface-200 bg-surface-50 px-3 py-2 text-sm text-surface-700">
+                            Como solicitar ferias?
+                        </span>
+                        <span class="rounded-full border border-surface-200 bg-surface-50 px-3 py-2 text-sm text-surface-700">
+                            Politica de home office
+                        </span>
+                        <span class="rounded-full border border-surface-200 bg-surface-50 px-3 py-2 text-sm text-surface-700">
+                            Segunda via de holerite
+                        </span>
                     </div>
-                    <span [ngClass]="msg.role === 'user' ? 'mr-2' : 'ml-2'" class="text-xs text-surface-500">
-                        {{ msg.role === 'user' ? 'Você' : 'Themis Agent' }}
+                </div>
+            </section>
+
+            <section class="rounded-[2rem] border border-surface-200 bg-white p-3 shadow-sm backdrop-blur md:p-4">
+                <div class="flex items-center justify-between gap-3 border-b border-surface-200 px-3 pb-3 pt-1 md:px-4">
+                    <div>
+                        <h3 class="m-0 text-base font-semibold text-surface-900 md:text-lg">Conversa</h3>
+                        <p class="m-0 mt-1 text-sm text-surface-500">Canal principal de atendimento ao colaborador</p>
+                    </div>
+                    <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
+                        Online
                     </span>
                 </div>
-            }
 
-            <!-- Typing Indicator com Control Flow -->
-            @if (chatService.isTyping()) {
-                <div class="flex flex-col items-start gap-2">
-                    <div class="max-w-[80%]">
-                        <p-message severity="secondary">
-                            <div class="flex items-center gap-2">
-                                <i class="pi pi-spinner pi-spin text-primary-500"></i>
-                                <span class="text-sm italic">Themis está digitando...</span>
-                            </div>
-                        </p-message>
+                <div class="flex flex-col gap-5 px-3 py-4 md:px-4 md:py-5">
+                    <div class="themis-chat-intro themis-chat-agent flex flex-col gap-2">
+                        <p-card class="border border-surface-200">
+                            <p class="m-0 leading-relaxed text-surface-800">
+                                Ola! Eu sou a <strong>Themis</strong>, sua assistente inteligente de Recursos Humanos.
+                                Posso ajudar com ferias, politicas internas, holerite, beneficios e escalonamento para um analista quando necessario.
+                            </p>
+                        </p-card>
+                        <span class="ml-2 text-xs text-surface-500">Themis Agent</span>
                     </div>
-                </div>
-            }
 
+                    @for (msg of chatService.messages(); track msg.created_at) {
+                        <div
+                            [ngClass]="msg.role === 'user' ? 'themis-chat-user' : 'themis-chat-agent'"
+                            class="themis-chat-message flex flex-col gap-2">
+                            <p-message [severity]="msg.role === 'user' ? 'success' : 'secondary'">
+                                @if (msg.role === 'user') {
+                                    <div style="color: inherit;" class="m-0 leading-relaxed">
+                                        {{ msg.content }}
+                                    </div>
+                                } @else {
+                                    <div class="marked-container m-0 leading-relaxed" [innerHTML]="msg.content | markdown">
+                                    </div>
+                                }
+                            </p-message>
+                            <span [ngClass]="msg.role === 'user' ? 'mr-2' : 'ml-2'" class="text-xs text-surface-500">
+                                {{ msg.role === 'user' ? 'Voce' : 'Themis Agent' }}
+                            </span>
+                        </div>
+                    }
+
+                    @if (chatService.isTyping()) {
+                        <div class="themis-chat-message themis-chat-typing flex flex-col gap-2">
+                            <div class="w-full max-w-xs sm:max-w-sm">
+                                <p-message severity="secondary">
+                                    <div class="flex items-center gap-2">
+                                        <i class="pi pi-spinner pi-spin text-primary-500"></i>
+                                        <span class="text-sm italic text-surface-600">Themis esta digitando...</span>
+                                    </div>
+                                </p-message>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </section>
         </div>
     </main>
 
-    <!-- Footer Input -->
-    <div class="p-4 flex justify-center">
-        <div class="w-full max-w-4xl">
-            <p-inputgroup>
-                <p-inputgroup-addon>
-                    <i class="pi pi-paperclip"></i>
-                </p-inputgroup-addon>
-                <input 
-                    pInputText 
-                    [(ngModel)]="userInput" 
-                    (keyup.enter)="sendMessage()"
-                    placeholder="Digite sua dúvida de RH aqui..." 
-                    class="w-full" />
-                <p-button 
-                    (onClick)="sendMessage()" 
-                    [disabled]="!userInput.trim() || chatService.isTyping()"
-                    label="Enviar"
-                    icon="pi pi-send"
-                    severity="primary">
-                </p-button>
-            </p-inputgroup>
+    <div class="themis-chat-composer sticky bottom-0 border-t border-surface-200 px-4 py-4 md:px-6">
+        <div class="mx-auto flex w-full max-w-6xl flex-col gap-3">
+            <div class="flex items-center justify-between gap-3 text-xs text-surface-500">
+                <span>Respostas baseadas na politica interna e passíveis de escalonamento.</span>
+                <span class="hidden sm:inline">Canal monitorado pelo RH</span>
+            </div>
+            <div class="w-full max-w-4xl">
+                <p-inputgroup>
+                    <p-inputgroup-addon>
+                        <i class="pi pi-paperclip"></i>
+                    </p-inputgroup-addon>
+                    <input
+                        pInputText
+                        [(ngModel)]="userInput"
+                        (keyup.enter)="sendMessage()"
+                        placeholder="Digite sua duvida de RH aqui..."
+                        class="w-full bg-white text-surface-900" />
+                    <p-button
+                        (onClick)="sendMessage()"
+                        [disabled]="!userInput.trim() || chatService.isTyping()"
+                        label="Enviar"
+                        icon="pi pi-send"
+                        severity="primary">
+                    </p-button>
+                </p-inputgroup>
+            </div>
         </div>
     </div>
 </div>
