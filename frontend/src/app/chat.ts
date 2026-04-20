@@ -31,7 +31,7 @@ import { MarkdownPipe } from './markdown.pipe';
     MarkdownPipe
   ],
   templateUrl: './chat.html',
-  styleUrl: './app.scss'
+  styleUrl: './chat.css'
 })
 export class ChatComponent {
   title = 'Themis HR';
