@@ -11,6 +11,8 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { MessageModule } from 'primeng/message';
 import { ToolbarModule } from 'primeng/toolbar';
 import { BadgeModule } from 'primeng/badge';
+import { CardModule } from 'primeng/card';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { MarkdownPipe } from './markdown.pipe';
 
 @Component({
@@ -26,6 +28,8 @@ import { MarkdownPipe } from './markdown.pipe';
     MessageModule,
     ToolbarModule,
     BadgeModule,
+    CardModule,
+    ScrollPanelModule,
     MarkdownPipe
   ],
   templateUrl: './chat.html',

@@ -16,10 +16,23 @@
   flex-direction: column;
 }
 
+.themis-chat-panel .p-card-body,
+.themis-chat-panel .p-card-content {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  padding: 0;
+}
+
 .themis-chat-thread {
   min-height: 0;
   flex: 1 1 auto;
-  overflow-y: auto;
+}
+
+.themis-chat-thread .p-scrollpanel-wrapper,
+.themis-chat-thread .p-scrollpanel-content {
+  height: 100%;
 }
 
 .themis-chat-intro,

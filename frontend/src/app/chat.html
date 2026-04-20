@@ -21,7 +21,7 @@
                     [rounded]="true"
                     [text]="true"
                     severity="secondary"
-                    styleClass="hidden sm:inline-flex">
+                    class="hidden sm:inline-flex">
                 </p-button>
                 <p-avatar label="U" shape="circle"></p-avatar>
             </div>
@@ -30,8 +30,9 @@
 
     <main class="themis-chat-main flex-1 px-4 pb-3 pt-3 md:px-6 md:pb-4 md:pt-4">
         <div class="mx-auto flex h-full w-full max-w-6xl flex-col">
-            <section class="themis-chat-panel p-3 md:p-4">
-                <div class="themis-chat-thread flex flex-col gap-4 px-3 py-3 md:px-4 md:py-4">
+            <p-card class="themis-chat-panel">
+                <p-scrollpanel [style]="{ width: '100%', height: '100%' }" class="themis-chat-thread">
+                    <div class="flex flex-col gap-4 px-3 py-3 md:px-4 md:py-4">
                     <div class="themis-chat-intro themis-chat-agent flex flex-col gap-2">
                         <p-message severity="secondary">
                             <div class="marked-container m-0">
@@ -74,8 +75,9 @@
                             </div>
                         </div>
                     }
-                </div>
-            </section>
+                    </div>
+                </p-scrollpanel>
+            </p-card>
         </div>
     </main>
 
