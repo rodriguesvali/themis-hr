@@ -1,95 +1,91 @@
-<div class="themis-chat-shell flex w-full flex-col">
-    <p-toolbar class="px-4 py-4 md:px-6">
+<div class="themis-chat-shell">
+    <p-toolbar styleClass="themis-chat-toolbar">
         <ng-template pTemplate="start">
-            <div class="flex items-center gap-3">
-                <div class="flex h-11 w-11 items-center justify-center">
+            <div class="themis-brand">
+                <span class="themis-brand-icon">
                     <i class="pi pi-briefcase"></i>
-                </div>
-                <div class="flex flex-col">
-                    <div class="flex items-center gap-2">
+                </span>
+                <div class="themis-brand-copy">
+                    <div class="themis-brand-title">
                         <span>Themis HR</span>
                         <p-badge value="Beta" severity="info"></p-badge>
                     </div>
-                    <small>Atendimento inteligente para duvidas de RH</small>
+                    <small>Atendimento inteligente para dúvidas de RH</small>
                 </div>
             </div>
         </ng-template>
         <ng-template pTemplate="end">
-            <div class="flex items-center gap-2 md:gap-3">
+            <div class="themis-toolbar-actions">
                 <p-button
                     icon="pi pi-bell"
                     [rounded]="true"
                     [text]="true"
                     severity="secondary"
-                    class="hidden sm:inline-flex">
+                    ariaLabel="Notificações">
                 </p-button>
                 <p-avatar label="U" shape="circle"></p-avatar>
             </div>
         </ng-template>
     </p-toolbar>
 
-    <main class="themis-chat-main flex-1 px-4 pb-3 pt-3 md:px-6 md:pb-4 md:pt-4">
-        <div class="mx-auto flex h-full w-full max-w-6xl flex-col">
-            <p-panel class="themis-chat-panel">
-                <p-scrollpanel [style]="{ width: '100%', height: '100%' }" class="themis-chat-thread">
-                    <div class="flex flex-col gap-4 px-3 py-3 md:px-4 md:py-4">
-                    <div class="themis-chat-intro themis-chat-agent flex flex-col gap-2">
-                        <p-message severity="secondary">
-                            <div class="marked-container m-0">
-                                Ola! Eu sou a <strong>Themis</strong>, sua assistente inteligente de Recursos Humanos.
-                                Posso ajudar com ferias, politicas internas, holerite, beneficios e escalonamento para um analista quando necessario.
+    <main class="themis-chat-main">
+        <section class="themis-chat-card" aria-label="Conversa com a Themis">
+            <p-scrollpanel [style]="{ width: '100%', height: '100%' }" styleClass="themis-chat-thread">
+                <div class="themis-thread-content">
+                    <div class="themis-chat-intro themis-chat-agent themis-chat-message">
+                        <div class="themis-chat-bubble themis-chat-bubble-agent">
+                            <div class="marked-container">
+                                Olá! Eu sou a <strong>Themis</strong>, sua assistente inteligente de Recursos Humanos.
+                                Posso ajudar com férias, políticas internas, holerite, benefícios e escalonamento para um analista quando necessário.
                             </div>
-                        </p-message>
-                        <small class="ml-2">Themis Agent</small>
+                        </div>
+                        <small>Themis Agent</small>
                     </div>
 
                     @for (msg of chatService.messages(); track msg.created_at) {
                         <div
                             [ngClass]="msg.role === 'user' ? 'themis-chat-user' : 'themis-chat-agent'"
-                            class="themis-chat-message flex flex-col gap-2">
-                            <p-message [severity]="msg.role === 'user' ? 'success' : 'secondary'">
+                            class="themis-chat-message">
+                            <div
+                                [ngClass]="msg.role === 'user' ? 'themis-chat-bubble-user' : 'themis-chat-bubble-agent'"
+                                class="themis-chat-bubble">
                                 @if (msg.role === 'user') {
-                                    <div class="m-0">
+                                    <div>
                                         {{ msg.content }}
                                     </div>
                                 } @else {
-                                    <div class="marked-container m-0" [innerHTML]="msg.content | markdown">
+                                    <div class="marked-container" [innerHTML]="msg.content | markdown">
                                     </div>
                                 }
-                            </p-message>
-                            <small [ngClass]="msg.role === 'user' ? 'mr-2' : 'ml-2'">
-                                {{ msg.role === 'user' ? 'Voce' : 'Themis Agent' }}
+                            </div>
+                            <small>
+                                {{ msg.role === 'user' ? 'Você' : 'Themis Agent' }}
                             </small>
                         </div>
                     }
 
                     @if (chatService.isTyping()) {
-                        <div class="themis-chat-message themis-chat-typing flex flex-col gap-2">
-                            <div class="w-full max-w-xs sm:max-w-sm">
-                                <p-message severity="secondary">
-                                    <div class="flex items-center gap-2">
-                                        <i class="pi pi-spinner pi-spin"></i>
-                                        <span>Themis esta digitando...</span>
-                                    </div>
-                                </p-message>
+                        <div class="themis-chat-message themis-chat-typing">
+                            <div class="themis-chat-bubble themis-chat-bubble-agent themis-typing-bubble">
+                                <i class="pi pi-spinner pi-spin"></i>
+                                <span>Themis está digitando...</span>
                             </div>
                         </div>
                     }
-                    </div>
-                </p-scrollpanel>
-            </p-panel>
-        </div>
+                </div>
+            </p-scrollpanel>
+        </section>
     </main>
 
-    <div class="themis-chat-composer px-4 py-2 md:px-6 md:py-3">
-        <div class="mx-auto w-full max-w-6xl">
-            <div class="flex items-center gap-3">
+    <footer class="themis-chat-composer">
+        <div class="themis-composer-inner">
+            <p-inputgroup>
                 <input
                     pInputText
                     [(ngModel)]="userInput"
                     (keyup.enter)="sendMessage()"
-                    placeholder="Digite sua duvida de RH aqui..."
-                    class="w-full flex-1" />
+                    placeholder="Digite sua dúvida de RH aqui..."
+                    aria-label="Mensagem para a Themis" />
                 <p-button
                     (onClick)="sendMessage()"
                     [disabled]="!userInput.trim() || chatService.isTyping()"
@@ -97,7 +93,7 @@
                     icon="pi pi-send"
                     severity="primary">
                 </p-button>
-            </div>
+            </p-inputgroup>
         </div>
-    </div>
+    </footer>
 </div>

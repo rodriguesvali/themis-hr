@@ -1,38 +1,104 @@
+:host {
+  display: block;
+}
+
 .themis-chat-shell {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   height: 100vh;
   overflow: hidden;
+  background: var(--p-surface-50);
+}
+
+:host ::ng-deep .themis-chat-toolbar {
+  flex: 0 0 auto;
+  border-radius: 0;
+  border-width: 0 0 1px;
+  padding: 1rem 1.5rem;
+  background: var(--p-surface-0);
+}
+
+.themis-brand,
+.themis-brand-title,
+.themis-toolbar-actions,
+.themis-typing-bubble {
+  display: flex;
+  align-items: center;
+}
+
+.themis-brand {
+  min-width: 0;
+  gap: 0.75rem;
+}
+
+.themis-brand-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  color: var(--p-primary-color);
+  background: var(--p-primary-50);
+  border-radius: var(--p-border-radius-md);
+}
+
+.themis-brand-copy {
+  min-width: 0;
+}
+
+.themis-brand-title {
+  gap: 0.5rem;
+  color: var(--p-surface-950);
+  font-weight: 600;
+}
+
+.themis-brand-copy small,
+.themis-chat-message small {
+  color: var(--p-surface-600);
+}
+
+.themis-toolbar-actions {
+  gap: 0.5rem;
 }
 
 .themis-chat-main {
-  min-height: 0;
-  overflow: hidden;
-  scrollbar-gutter: stable both-edges;
-}
-
-.themis-chat-panel {
   flex: 1 1 auto;
   min-height: 0;
+  padding: 1rem 1.5rem;
+  overflow: hidden;
 }
 
-.themis-chat-panel .p-panel-content {
+.themis-chat-card {
+  width: min(100%, 72rem);
+  height: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+  background: var(--p-surface-0);
+  border: 1px solid var(--p-surface-200);
+  border-radius: var(--p-border-radius-lg);
+  box-shadow: var(--p-card-shadow);
+}
+
+:host ::ng-deep .themis-chat-thread,
+:host ::ng-deep .themis-chat-thread .p-scrollpanel-wrapper,
+:host ::ng-deep .themis-chat-thread .p-scrollpanel-content {
+  height: 100%;
+}
+
+.themis-thread-content {
   display: flex;
   flex-direction: column;
-  min-height: 0;
-  height: 100%;
-}
-
-.themis-chat-thread {
-  min-height: 0;
-  flex: 1 1 auto;
-}
-
-.themis-chat-thread .p-scrollpanel-wrapper,
-.themis-chat-thread .p-scrollpanel-content {
-  height: 100%;
+  gap: 1rem;
+  min-height: 100%;
+  padding: 1.5rem;
 }
 
 .themis-chat-intro,
 .themis-chat-message {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   max-width: min(100%, 46rem);
 }
 
@@ -42,7 +108,50 @@
 }
 
 .themis-chat-user {
+  align-self: flex-end;
   align-items: flex-end;
+}
+
+.themis-chat-bubble {
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.875rem 1rem;
+  color: var(--p-surface-800);
+  border-radius: var(--p-border-radius-lg);
+  line-height: 1.55;
+}
+
+.themis-chat-bubble-agent {
+  background: var(--p-surface-100);
+  border: 1px solid var(--p-surface-200);
+}
+
+.themis-chat-bubble-user {
+  color: var(--p-primary-contrast-color);
+  background: var(--p-primary-color);
+}
+
+.themis-typing-bubble {
+  gap: 0.5rem;
+}
+
+.themis-chat-composer {
+  flex: 0 0 auto;
+  padding: 0 1.5rem 1rem;
+  background: var(--p-surface-50);
+}
+
+.themis-composer-inner {
+  width: min(100%, 72rem);
+  margin: 0 auto;
+}
+
+:host ::ng-deep .themis-composer-inner .p-inputtext {
+  width: 100%;
+}
+
+.marked-container {
+  margin: 0;
 }
 
 .marked-container > :first-child {
@@ -54,8 +163,49 @@
 }
 
 @media (max-width: 640px) {
+  :host ::ng-deep .themis-chat-toolbar {
+    padding: 0.875rem 1rem;
+  }
+
+  .themis-brand {
+    gap: 0.625rem;
+  }
+
+  .themis-brand-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .themis-brand-copy small {
+    display: block;
+    max-width: 14rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .themis-chat-main {
+    padding: 0.75rem 1rem;
+  }
+
+  .themis-chat-card {
+    border-radius: var(--p-border-radius-md);
+  }
+
+  .themis-thread-content {
+    padding: 1rem;
+  }
+
   .themis-chat-intro,
   .themis-chat-message {
     max-width: 100%;
+  }
+
+  .themis-chat-composer {
+    padding: 0 1rem 0.75rem;
+  }
+
+  :host ::ng-deep .themis-composer-inner .p-button-label {
+    display: none;
   }
 }
