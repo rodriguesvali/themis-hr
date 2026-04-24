@@ -59,9 +59,10 @@ Persistir somente:
 
 ## CrewAI Expectations
 
-- agents e tasks preferencialmente orientados a arquivo
-- fluxo sequencial no MVP
-- separação clara entre intake, classificação, conhecimento, resposta, sentimento e escalonamento
+- agents preferencialmente orientados a arquivo
+- fluxo condicional no backend para controlar custo
+- principal agent responsável por classificar e escolher um especialista
+- especialistas por área executados sob demanda, nunca todos em sequência
 
 ## Open Questions to Resolve During Implementation
 
@@ -79,15 +80,20 @@ Atualizar este arquivo com:
 - A estrutura de módulos foi padronizada (`api`, `core`, `db`, `models`, `schemas`, `services`, `orchestration`, `knowledge`).
 - Tabelas iniciais (`conversations` e `messages`) foram criadas e as migrações aplicadas.
 - Endpoints `POST /api/v1/conversations` **conectado ao motor CrewAI**.
-- Orquestrador (ThemisHRCrew) foi criado configurando 6 Agentes e suas 6 Tasks YAML conforme arquitetura definida no SAD.
-- Uma base de conhecimento fictícia em Markdown (`knowledge/mock.py`) foi injetada para que a LLM tenha regras reais para seguir e não alucine (simulando um Vector RAG futuro).
+- Orquestrador (`ThemisHRCrew`) foi refatorado para o modelo "principal + especialistas sob demanda".
+- O fluxo deixou de ser uma esteira fixa de 6 tasks. Agora o `principal_agent` classifica a pergunta, identifica sensibilidade e chama somente um especialista de área quando necessário.
+- Especialistas configurados: `ferias_agent`, `remuneracao_agent`, `jornada_agent`, `admissao_agent` e `rescisao_agent`.
+- Casos de alta sensibilidade ou assuntos gerais são escalados diretamente, sem chamada a especialista.
+- As bases de conhecimento mockadas por área são carregadas apenas para o especialista escolhido, reduzindo contexto enviado à LLM.
 
 ### Estrutura Criada
 O backend está encapsulado na pasta `backend/src/themis_hr_api`. O Alembic está gerenciando os scripts em `backend/alembic`. Dependências listadas em `backend/requirements.txt`. O CrewAI se localiza dentro de `orchestration/`.
 
 ### Gaps conhecidos
 - O Provider/Modelo para LLM deve ser ajustado com chaves reais no ambiente.
-- O KICKOFF do CrewAI ainda é síncrono para o Frontend (A rota espera o tempo inteiro da execução do agente que pode ser até 10~20s). Em sistemas de conversação real, deve-se transitar para WebSockets ou Polling de Filas (Celery/Redis) e SSE.
+- O endpoint de conversa ainda executa CrewAI de forma síncrona. Mesmo com a redução de custo, em sistemas de conversação real deve-se transitar para WebSockets, polling de filas (Celery/Redis) ou SSE.
+- A classificação do `principal_agent` ainda depende de LLM. Uma camada preliminar de regras/keywords pode reduzir ainda mais o custo.
 
 ### Próximos passos
-- Conectar RAG Vetorial na task do Knowledge_agent (Pincone ou LangChain loader de PDFs).
+- Conectar RAG vetorial por área antes da chamada ao especialista escolhido.
+- Persistir categoria, especialista, confiança e motivo de escalonamento em colunas/eventos próprios.

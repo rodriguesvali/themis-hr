@@ -7,7 +7,7 @@ from themis_hr_api.schemas.chat import ChatHistoryResponse
 from fastapi import HTTPException
 import asyncio
 
-from themis_hr_api.db.database import get_db, engine, Base
+from themis_hr_api.db.database import get_db
 from themis_hr_api.models import chat
 from fastapi.middleware.cors import CORSMiddleware
 from themis_hr_api.orchestration.crew import ThemisHRCrew
@@ -17,9 +17,7 @@ from themis_hr_api.orchestration.crew import ThemisHRCrew
 logging.basicConfig(level=settings.log_level)
 logger = logging.getLogger(__name__)
 
-# ATENÇÃO: Em produção usaremos Alembic para criar as tabelas.
-# Para este mock inicial de healthcheck, não chamaremos Base.metadata.create_all aqui.
-# Isso será dever do Alembic mais tarde.
+# ATENÇÃO: o schema é gerenciado pelo Alembic; a API não cria tabelas automaticamente.
 
 app = FastAPI(title="Themis HR API", description="Multi-agent HR Helpdesk")
 
@@ -60,52 +58,10 @@ async def init_chat(request: ChatRequest, db: Session = Depends(get_db)):
     db.commit()
 
     try:
-        # Prepara a entrada Inicial do Router
-        # Em um cenário ideal de "Agentic Routing" o Router Agent retornaria qual documento ele precisou.
-        # Aqui, como o KICKOFF é fixo para a pipeline e sequencial, a LLM decidirá em run-time cruzando os Mocks em memoria:
-        
-        from themis_hr_api.knowledge.ferias import KNOWLEDGE_BASE_MOCK as kb_ferias
-        from themis_hr_api.knowledge.admissao_contratos import KNOWLEDGE_BASE_MOCK as kb_admissao
-        from themis_hr_api.knowledge.jornada_feriados import KNOWLEDGE_BASE_MOCK as kb_jornada
-        from themis_hr_api.knowledge.remuneracao import KNOWLEDGE_BASE_MOCK as kb_remuneracao
-        from themis_hr_api.knowledge.rescisao import KNOWLEDGE_BASE_MOCK as kb_rescisao
-
-        mega_database = f"""
-        [Base 1: Férias e Licenças]
-        {kb_ferias}
-
-        [Base 2: Admissão e Estágio]
-        {kb_admissao}
-
-        [Base 3: Jornada e DSR]
-        {kb_jornada}
-
-        [Base 4: Remuneração e Benefícios]
-        {kb_remuneracao}
-
-        [Base 5: Rescisão]
-        {kb_rescisao}
-        """
-
-        inputs = {
-            'user_message': request.message,
-            'knowledge_base': mega_database
-        }
-        
-        # Executa a Crew (CUIDADO: É um processo demorado chamando LLMs sequenciais)
-        # O ideal no futuro do MVP é usar background_tasks ou workers (Celery/Redis)
-        result = await asyncio.to_thread(ThemisHRCrew().crew().kickoff, inputs=inputs)
-        
-        # Fazendo parse do resultado "ESCALATE: TRUE \n MOTIVO/RESPOSTA: XYZ"
-        raw_output = str(result)
-        escalate = False
-        bot_reply = raw_output
-        
-        if "ESCALATE: TRUE" in raw_output.upper():
-            escalate = True
-            bot_reply = raw_output.replace("ESCALATE: TRUE", "").replace("MOTIVO:", "").strip()
-        else:
-            bot_reply = raw_output.replace("ESCALATE: FALSE", "").replace("RESPOSTA:", "").strip()
+        # Fluxo condicional: principal_agent classifica e apenas o especialista necessário é chamado.
+        result = await asyncio.to_thread(ThemisHRCrew().run, request.message)
+        bot_reply = result.reply
+        escalate = result.should_escalate
 
     except Exception as e:
         logger.error(f"Erro na engine da CrewAI: {e}")

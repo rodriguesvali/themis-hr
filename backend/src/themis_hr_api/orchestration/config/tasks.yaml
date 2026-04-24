@@ -1,58 +1,25 @@
-intake_task:
-  description: >
-    Leia a mensagem bruta do usuário: "{user_message}"
-    Extraia as informações principais e limpe erros de digitação. Retorne apenas o texto limpo com a dúvida principal, sem interagir ou cumprimentar.
-  expected_output: >
-    A dúvida do usuário em formato claro e direto.
-  agent: intake_agent
+# Referência documental do fluxo atual.
+# A orquestração condicional é montada em Python em orchestration/crew.py para evitar
+# que todos os especialistas sejam executados em sequência.
 
-classification_task:
+routing_task:
+  agent: principal_agent
   description: >
-    O usuário escreveu o seguinte ({user_message}). Com base nas categorias disponíveis no seu papel, escreva o NOME DA CATEGORIA e NOME DA BASE DE CONHECIMENTO ASSOCIADA que será necessária. 
-    Exemplos de Saída Esperada:
-    [Categoria: Férias e Licenças, Arquivo: ferias.md, Sensibilidade: Baixa]
-    [Categoria: Remuneração, Arquivo: remuneracao.md, Sensibilidade: Baixa]
-    [Categoria: Jornada e Ponto, Arquivo: jornada_feriados.md, Sensibilidade: Media]
-    [Categoria: Admissão e Estágio, Arquivo: admissao_contratos.md, Sensibilidade: Media]
-    [Categoria: Rescisão, Arquivo: rescisao.md, Sensibilidade: Alta]
-    [Categoria: Assuntos Gerais, Arquivo: n/a, Sensibilidade: Alta]
+    Classificar a mensagem do colaborador, escolher uma área de conhecimento e indicar sensibilidade.
   expected_output: >
-    "[Categoria: X, Arquivo: Y, Sensibilidade: Z]"
-  agent: router_agent
+    JSON com area_key, category, sensitivity e reason.
 
-knowledge_task:
+specialist_task:
+  agent: especialista_escolhido
   description: >
-    Base de conhecimento do arquivo sugerido pelo router carregada aqui no seu contexto ({knowledge_base}).
-    Cruze a dúvida original do usuário "{user_message}" com este documento. Retorne o trecho da política (ou trecho de artigo da CLT) que fundamenta a resposta.
-    Se a dúvida fugir do assunto do arquivo atual e for, por exemplo, sobre "Horas Extras" mas você está carregado com regras de "Férias", responda explicitamente "Erro de Contexto. Não encontrei no meu guia atual.".
+    Executada apenas para a área escolhida pelo principal_agent. O especialista recebe a pergunta,
+    a classificação e somente a base de conhecimento da sua área.
   expected_output: >
-    Parágrafos correspondentes à política/CLT consultada.
-  agent: expert_agent
+    JSON com answer, confidence, should_escalate e escalation_reason.
 
-response_task:
+direct_escalation:
+  agent: principal_agent
   description: >
-    Baseando-se estritamente na política de RH extraída na task anterior, monte a resposta ao usuário. Responda diretamente e seja didático. Não invente nada fora da política fornecida. Se a task anterior disse "Nenhuma política encontrada", diga apenas que não tem essa informação.
+    Casos classificados como alta sensibilidade ou assuntos gerais são escalados sem chamar especialista.
   expected_output: >
-    Um texto claro respondendo a dúvida original baseada na política.
-  agent: response_agent
-
-sentiment_task:
-  description: >
-    Leia a mensagem original do usuário ("{user_message}") e perceba seu tom emocional. Em seguida, leia a resposta elaborada na etapa anterior e refine-a se necessário (adicione empatia se o usuário estiver bravo, ou tom acolhedor). Retorne o texto revisado na íntegra.
-  expected_output: >
-    A resposta final de RH ajustada emocionalmente.
-  agent: sentiment_agent
-
-escalation_task:
-  description: >
-    Revise a resposta gerada. Se a classificação anterior for de 'Sensibilidade: Alta' ou se a resposta contiver 'não tem essa informação', é obrigatório acionar o handoff humano e você NÃO deve dar a resposta do RH. 
-    Seu output deve ter OBRIGATORIAMENTE o seguinte padrão:
-    Se precisar escalar:
-    ESCALATE: TRUE
-    MOTIVO: <seu motivo de escalonamento>
-    Se NÃO precisar escalar:
-    ESCALATE: FALSE
-    RESPOSTA: <A resposta refinada da etapa de sentimento>
-  expected_output: >
-    ESCALATE: [TRUE/FALSE] \n [MOTIVO/RESPOSTA]: [conteúdo]
-  agent: escalation_agent
+    Resposta de handoff humano e motivo de escalonamento.

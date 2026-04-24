@@ -127,8 +127,9 @@
 }
 
 .themis-chat-bubble-user {
-  color: var(--p-primary-contrast-color);
-  background: var(--p-primary-color);
+  color: var(--p-primary-700);
+  background: var(--p-primary-50);
+  border: 1px solid var(--p-primary-200);
 }
 
 .themis-typing-bubble {
@@ -148,6 +149,16 @@
 
 :host ::ng-deep .themis-composer-inner .p-inputtext {
   width: 100%;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+:host ::ng-deep .themis-composer-inner .p-inputtext:enabled:focus {
+  border-color: var(--p-primary-300);
+  box-shadow: 0 0 0 0.0625rem color-mix(in srgb, var(--p-primary-color) 14%, transparent);
+}
+
+:host ::ng-deep .themis-composer-inner .p-inputgroup .p-button {
+  border-color: var(--p-primary-400);
 }
 
 .marked-container {
