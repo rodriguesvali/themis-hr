@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Boolean
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from themis_hr_api.db.database import Base
@@ -11,7 +11,7 @@ class Conversation(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     status = Column(String, default="active") # active, escalated, resolved
     
-    messages = relationship("Message", back_populates="conversation")
+    messages = relationship("Message", back_populates="conversation", order_by="Message.created_at")
 
 class Message(Base):
     __tablename__ = "messages"
