@@ -86,10 +86,10 @@ Atualizar este arquivo com:
 - Casos de alta sensibilidade ou assuntos gerais são escalados diretamente, sem chamada a especialista.
 - As bases de conhecimento mockadas por área são carregadas apenas para o especialista escolhido, reduzindo contexto enviado à LLM.
 - Foi adicionado o `legal_reviewer_agent` como consultor jurídico trabalhista após a resposta do especialista.
-- A revisão jurídica usa `PDFSearchTool` do `crewai-tools` apontando para `backend/docs/consolidacao_leis_trabalho.pdf`, com embedding Google configurável por `CLT_EMBEDDING_MODEL`.
+- A revisão jurídica consulta o PDF local da CLT em `backend/docs/consolidacao_leis_trabalho.pdf` por uma ferramenta cacheada de busca textual.
 - Respostas aprovadas pelo especialista agora passam por revisão jurídica antes de chegar ao colaborador; reprovação, risco médio/alto ou falha na revisão geram escalonamento humano.
 - O caminho da CLT pode ser alterado via `CLT_PDF_PATH`.
-- O `PDFSearchTool` da CLT é cacheado por processo para evitar ingestão repetida do PDF a cada revisão.
+- O texto extraído da CLT é cacheado por processo para evitar releitura do PDF a cada revisão.
 - A revisão jurídica faz uma consulta prévia obrigatória à CLT e passa os trechos recuperados para o `legal_reviewer_agent`.
 - Metadados da resposta da Themis passaram a ser persistidos em `messages`: categoria, especialista, confiança, motivo de escalonamento, status da revisão jurídica, nível de risco, notas e fundamento legal.
 
@@ -100,10 +100,10 @@ O backend está encapsulado na pasta `backend/src/themis_hr_api`. O Alembic est�
 - O Provider/Modelo para LLM deve ser ajustado com chaves reais no ambiente.
 - O endpoint de conversa ainda executa CrewAI de forma síncrona. Mesmo com a redução de custo, em sistemas de conversação real deve-se transitar para WebSockets, polling de filas (Celery/Redis) ou SSE.
 - A classificação do `principal_agent` ainda depende de LLM. Uma camada preliminar de regras/keywords pode reduzir ainda mais o custo.
-- A revisão jurídica com `PDFSearchTool` pode aumentar latência na primeira ingestão/indexação do PDF da CLT.
+- A revisão jurídica usa busca textual simples no PDF da CLT; RAG vetorial por embeddings segue como evolução futura.
 - A auditoria jurídica ainda é persistida como metadados da mensagem final; eventos detalhados de tool call/trechos exatos recuperados ainda não são registrados em tabela própria.
 
 ### Próximos passos
 - Conectar RAG vetorial por área antes da chamada ao especialista escolhido.
 - Persistir eventos detalhados de orquestração para auditoria completa por etapa.
-- Persistir ou rastrear os trechos exatos retornados pelo `PDFSearchTool` em uma tabela própria de evidências jurídicas.
+- Persistir ou rastrear os trechos exatos retornados pela consulta à CLT em uma tabela própria de evidências jurídicas.

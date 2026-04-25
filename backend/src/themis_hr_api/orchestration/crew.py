@@ -6,11 +6,12 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
+import fitz
 import yaml
 from crewai import Agent, Crew, Process, Task
-from crewai_tools import PDFSearchTool
+from crewai.tools import tool
 
-from themis_hr_api.core.config import settings
+from themis_hr_api.core.config import PROJECT_ROOT, settings
 from themis_hr_api.knowledge.admissao_contratos import KNOWLEDGE_BASE_MOCK as KB_ADMISSAO
 from themis_hr_api.knowledge.ferias import KNOWLEDGE_BASE_MOCK as KB_FERIAS
 from themis_hr_api.knowledge.jornada_feriados import KNOWLEDGE_BASE_MOCK as KB_JORNADA
@@ -56,37 +57,63 @@ class ThemisCrewResult:
 
 
 @lru_cache(maxsize=4)
-def _build_cached_clt_pdf_tool(
-    clt_pdf_path: str,
-    google_api_key: str,
-    embedding_model: str,
-) -> PDFSearchTool:
+def _load_pdf_pages(clt_pdf_path: str) -> tuple[tuple[int, str], ...]:
     path = Path(clt_pdf_path)
     if not path.exists():
         raise FileNotFoundError(f"CLT PDF não encontrado: {path}")
 
-    tool_config: dict[str, Any] = {}
-    if google_api_key:
-        tool_config["embedding_model"] = {
-            "provider": "google-generativeai",
-            "config": {
-                "api_key": google_api_key,
-                "model_name": embedding_model,
-                "task_type": "RETRIEVAL_DOCUMENT",
-            },
-        }
+    with fitz.open(path) as document:
+        return tuple(
+            (page.number + 1, page.get_text("text"))
+            for page in document
+            if page.get_text("text").strip()
+        )
 
-    return PDFSearchTool(
-        name="Consultar CLT",
-        description=(
-            "Consulta semanticamente o PDF da Consolidação das Leis do Trabalho "
-            "para apoiar revisão jurídica trabalhista."
-        ),
-        pdf=str(path),
-        collection_name="themis_clt_pdf",
-        limit=4,
-        config=tool_config,
-    )
+
+def _terms_for_clt_query(query: str) -> list[str]:
+    normalized = query.lower()
+    terms = [term for term in re.findall(r"[a-zA-ZÀ-ÿ0-9]{4,}", normalized)]
+
+    if "jornada" in normalized and "descanso" in normalized:
+        terms.extend(["interjornada", "entre jornadas", "11 horas", "onze horas", "consecutivas"])
+
+    return list(dict.fromkeys(terms))
+
+
+def _search_clt_pdf(query: str, clt_pdf_path: str) -> str:
+    terms = _terms_for_clt_query(query)
+    if not terms:
+        return "Nenhum termo suficiente para consulta à CLT."
+
+    matches: list[tuple[int, int, str]] = []
+    for page_number, text in _load_pdf_pages(clt_pdf_path):
+        normalized_text = text.lower()
+        score = sum(normalized_text.count(term) for term in terms)
+        if score:
+            matches.append((score, page_number, text))
+
+    if not matches:
+        return "Nenhum trecho relevante encontrado na CLT para a consulta."
+
+    snippets: list[str] = []
+    for _, page_number, text in sorted(matches, reverse=True)[:4]:
+        normalized_text = text.lower()
+        positions = [normalized_text.find(term) for term in terms if normalized_text.find(term) >= 0]
+        start = max(min(positions) - 500, 0) if positions else 0
+        end = min(start + 1400, len(text))
+        snippet = re.sub(r"\s+", " ", text[start:end]).strip()
+        snippets.append(f"Página {page_number}: {snippet}")
+
+    return "\n\n".join(snippets)
+
+
+@tool("Consultar CLT")
+def consultar_clt(query: str) -> str:
+    """Consulta o PDF local da CLT por termos e retorna trechos relevantes."""
+    clt_pdf_path = str(Path(settings.clt_pdf_path))
+    if not Path(clt_pdf_path).is_absolute():
+        clt_pdf_path = str(PROJECT_ROOT / clt_pdf_path)
+    return _search_clt_pdf(query=query, clt_pdf_path=clt_pdf_path)
 
 
 KNOWLEDGE_AREAS: dict[str, KnowledgeArea] = {
@@ -182,13 +209,9 @@ class ThemisHRCrew:
             verbose=True,
         )
 
-    def _build_clt_pdf_tool(self) -> PDFSearchTool:
-        clt_pdf_path = self._resolve_project_path(settings.clt_pdf_path)
-        return _build_cached_clt_pdf_tool(
-            str(clt_pdf_path),
-            settings.google_api_key,
-            settings.clt_embedding_model,
-        )
+    def _build_clt_pdf_tool(self) -> Any:
+        self._resolve_project_path(settings.clt_pdf_path)
+        return consultar_clt
 
     def _resolve_project_path(self, configured_path: str) -> Path:
         path = Path(configured_path)
@@ -311,9 +334,6 @@ class ThemisHRCrew:
             escalation_reason=escalation_reason,
         )
 
-        if specialist_result.should_escalate:
-            return specialist_result
-
         return self._review_answer_legally(
             user_message=user_message,
             routing=routing,
@@ -357,8 +377,10 @@ class ThemisHRCrew:
             Sensibilidade classificada: {routing.sensitivity}
             Motivo do roteamento: {routing.reason}
             Confiança do especialista: {specialist_result.confidence}
+            Especialista recomendou escalonamento: {specialist_result.should_escalate}
+            Motivo de escalonamento do especialista: {specialist_result.escalation_reason or "null"}
 
-            Resposta proposta pelo especialista:
+            Resposta proposta pelo especialista ou motivo de handoff:
             \"{specialist_result.reply}\"
 
             Trechos recuperados da CLT para revisão:
@@ -369,6 +391,8 @@ class ThemisHRCrew:
             - Você também pode usar a ferramenta Consultar CLT para buscar apoio complementar.
             - Verifique se a resposta contradiz a legislação trabalhista brasileira ou extrapola a base de RH.
             - Não transforme a resposta em parecer jurídico.
+            - Se o especialista pediu escalonamento apenas por falta de cobertura na base interna, use a CLT para tentar
+              responder com segurança quando a regra legal for objetiva e o risco for baixo.
             - Se houver risco médio ou alto, ambiguidade legal, ausência de base suficiente ou necessidade de interpretação humana,
               marque should_escalate como true.
             - Se aprovar, preserve o sentido da resposta e ajuste apenas pontos necessários de cautela.
@@ -434,7 +458,7 @@ class ThemisHRCrew:
             category=specialist_result.category,
             sensitivity=routing.sensitivity,
             specialist=specialist_result.specialist,
-            confidence=specialist_result.confidence,
+            confidence="media" if specialist_result.confidence == "baixa" else specialist_result.confidence,
             escalation_reason=None,
             legal_reviewed=True,
             legal_risk_level=risk_level,

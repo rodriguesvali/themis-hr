@@ -69,6 +69,37 @@ class LegalReviewTests(unittest.TestCase):
         self.assertEqual(result.legal_risk_level, "medio")
         self.assertEqual(result.escalation_reason, "Risco moderado")
 
+    def test_legal_reviewer_can_rescue_specialist_knowledge_gap(self) -> None:
+        outputs = iter(
+            [
+                (
+                    '{"answer": "Encaminhar por falta de base interna.", '
+                    '"confidence": "baixa", "should_escalate": true, '
+                    '"escalation_reason": "Base interna não cobre interjornada."}'
+                ),
+                (
+                    '{"approved": true, '
+                    '"final_answer": "Entre duas jornadas, a CLT prevê descanso mínimo de 11 horas consecutivas.", '
+                    '"risk_level": "baixo", "should_escalate": false, '
+                    '"legal_notes": "Regra legal objetiva.", '
+                    '"legal_basis": "CLT, art. 66"}'
+                ),
+            ]
+        )
+        self.crew._kickoff_single_task = lambda agent, task: next(outputs)
+
+        result = self.crew._answer_with_specialist(
+            "Qual o intervalo de descanso entre jornadas?",
+            self.routing,
+            self.area,
+        )
+
+        self.assertFalse(result.should_escalate)
+        self.assertTrue(result.legal_reviewed)
+        self.assertEqual(result.confidence, "media")
+        self.assertEqual(result.legal_basis, "CLT, art. 66")
+        self.assertIn("11 horas", result.reply)
+
     def test_invalid_legal_review_json_escalates(self) -> None:
         self.crew._kickoff_single_task = lambda agent, task: "resposta sem json"
 
