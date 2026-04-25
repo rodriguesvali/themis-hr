@@ -2,11 +2,13 @@ import json
 import os
 import re
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
 import yaml
 from crewai import Agent, Crew, Process, Task
+from crewai_tools import PDFSearchTool
 
 from themis_hr_api.core.config import settings
 from themis_hr_api.knowledge.admissao_contratos import KNOWLEDGE_BASE_MOCK as KB_ADMISSAO
@@ -47,6 +49,44 @@ class ThemisCrewResult:
     specialist: str | None
     confidence: str
     escalation_reason: str | None = None
+    legal_reviewed: bool = False
+    legal_risk_level: str | None = None
+    legal_notes: str | None = None
+    legal_basis: str | None = None
+
+
+@lru_cache(maxsize=4)
+def _build_cached_clt_pdf_tool(
+    clt_pdf_path: str,
+    google_api_key: str,
+    embedding_model: str,
+) -> PDFSearchTool:
+    path = Path(clt_pdf_path)
+    if not path.exists():
+        raise FileNotFoundError(f"CLT PDF não encontrado: {path}")
+
+    tool_config: dict[str, Any] = {}
+    if google_api_key:
+        tool_config["embedding_model"] = {
+            "provider": "google-generativeai",
+            "config": {
+                "api_key": google_api_key,
+                "model_name": embedding_model,
+                "task_type": "RETRIEVAL_DOCUMENT",
+            },
+        }
+
+    return PDFSearchTool(
+        name="Consultar CLT",
+        description=(
+            "Consulta semanticamente o PDF da Consolidação das Leis do Trabalho "
+            "para apoiar revisão jurídica trabalhista."
+        ),
+        pdf=str(path),
+        collection_name="themis_clt_pdf",
+        limit=4,
+        config=tool_config,
+    )
 
 
 KNOWLEDGE_AREAS: dict[str, KnowledgeArea] = {
@@ -134,12 +174,28 @@ class ThemisHRCrew:
         with config_path.open(encoding="utf-8") as config_file:
             return yaml.safe_load(config_file)
 
-    def _build_agent(self, config_key: str) -> Agent:
+    def _build_agent(self, config_key: str, tools: list[Any] | None = None) -> Agent:
         return Agent(
             config=self.agent_configs[config_key],
+            tools=tools or [],
             llm=self.llm,
             verbose=True,
         )
+
+    def _build_clt_pdf_tool(self) -> PDFSearchTool:
+        clt_pdf_path = self._resolve_project_path(settings.clt_pdf_path)
+        return _build_cached_clt_pdf_tool(
+            str(clt_pdf_path),
+            settings.google_api_key,
+            settings.clt_embedding_model,
+        )
+
+    def _resolve_project_path(self, configured_path: str) -> Path:
+        path = Path(configured_path)
+        if path.is_absolute():
+            return path
+        project_root = Path(__file__).resolve().parents[4]
+        return project_root / path
 
     def _route(self, user_message: str) -> RoutingDecision:
         principal = self._build_agent("principal_agent")
@@ -245,7 +301,7 @@ class ThemisHRCrew:
             should_escalate = True
             escalation_reason = escalation_reason or "Confiança baixa na resposta do especialista."
 
-        return ThemisCrewResult(
+        specialist_result = ThemisCrewResult(
             reply=answer,
             should_escalate=should_escalate,
             category=area.category,
@@ -253,6 +309,159 @@ class ThemisHRCrew:
             specialist=area.key,
             confidence=confidence,
             escalation_reason=escalation_reason,
+        )
+
+        if specialist_result.should_escalate:
+            return specialist_result
+
+        return self._review_answer_legally(
+            user_message=user_message,
+            routing=routing,
+            area=area,
+            specialist_result=specialist_result,
+        )
+
+    def _review_answer_legally(
+        self,
+        user_message: str,
+        routing: RoutingDecision,
+        area: KnowledgeArea,
+        specialist_result: ThemisCrewResult,
+    ) -> ThemisCrewResult:
+        try:
+            clt_pdf_tool = self._build_clt_pdf_tool()
+            clt_query = (
+                f"{area.category}. Pergunta: {user_message}. "
+                f"Resposta proposta: {specialist_result.reply}"
+            )
+            clt_context = clt_pdf_tool.run(query=clt_query)
+            legal_reviewer = self._build_agent(
+                "legal_reviewer_agent",
+                tools=[clt_pdf_tool],
+            )
+        except Exception as exc:
+            return self._legal_review_fallback(
+                specialist_result=specialist_result,
+                reason=f"Falha ao preparar consulta à CLT: {exc}",
+            )
+
+        task = Task(
+            description=f"""
+            Revise juridicamente a resposta proposta antes do envio ao colaborador.
+
+            Pergunta original do colaborador:
+            \"{user_message}\"
+
+            Categoria roteada: {area.category}
+            Especialista acionado: {area.key}
+            Sensibilidade classificada: {routing.sensitivity}
+            Motivo do roteamento: {routing.reason}
+            Confiança do especialista: {specialist_result.confidence}
+
+            Resposta proposta pelo especialista:
+            \"{specialist_result.reply}\"
+
+            Trechos recuperados da CLT para revisão:
+            {clt_context}
+
+            Instruções:
+            - Use os trechos recuperados da CLT como base mínima da revisão.
+            - Você também pode usar a ferramenta Consultar CLT para buscar apoio complementar.
+            - Verifique se a resposta contradiz a legislação trabalhista brasileira ou extrapola a base de RH.
+            - Não transforme a resposta em parecer jurídico.
+            - Se houver risco médio ou alto, ambiguidade legal, ausência de base suficiente ou necessidade de interpretação humana,
+              marque should_escalate como true.
+            - Se aprovar, preserve o sentido da resposta e ajuste apenas pontos necessários de cautela.
+            - Inclua em legal_basis uma referência curta ao fundamento consultado ou explique a ausência de base suficiente.
+
+            Responda exclusivamente em JSON válido, sem markdown:
+            {{
+              "approved": true|false,
+              "final_answer": "resposta final revisada ou null",
+              "risk_level": "baixo|medio|alto",
+              "should_escalate": true|false,
+              "legal_notes": "observação curta sobre a revisão",
+              "legal_basis": "fundamento legal curto, trecho consultado ou null"
+            }}
+            """,
+            expected_output="JSON válido com approved, final_answer, risk_level, should_escalate, legal_notes e legal_basis.",
+            agent=legal_reviewer,
+        )
+
+        try:
+            raw_output = self._kickoff_single_task(legal_reviewer, task)
+        except Exception as exc:
+            return self._legal_review_fallback(
+                specialist_result=specialist_result,
+                reason=f"Falha durante revisão jurídica automática: {exc}",
+            )
+
+        payload = self._parse_json(raw_output)
+        if not payload:
+            return self._legal_review_fallback(
+                specialist_result=specialist_result,
+                reason="Revisão jurídica automática retornou JSON inválido ou vazio.",
+            )
+
+        approved = self._to_bool(payload.get("approved"))
+        risk_level = self._normalize_risk_level(str(payload.get("risk_level", "")))
+        legal_should_escalate = self._to_bool(payload.get("should_escalate"))
+        legal_notes = str(payload.get("legal_notes") or "").strip() or None
+        legal_basis = str(payload.get("legal_basis") or "").strip() or None
+        final_answer = str(payload.get("final_answer") or "").strip()
+
+        if not approved or legal_should_escalate or risk_level in {"medio", "alto"}:
+            return ThemisCrewResult(
+                reply=(
+                    "Vou encaminhar sua solicitação para um analista de RH. "
+                    "A resposta precisa de revisão humana para garantir aderência à legislação trabalhista."
+                ),
+                should_escalate=True,
+                category=specialist_result.category,
+                sensitivity=routing.sensitivity,
+                specialist=specialist_result.specialist,
+                confidence="baixa",
+                escalation_reason=legal_notes or "Revisão jurídica automática recomendou escalonamento.",
+                legal_reviewed=True,
+                legal_risk_level=risk_level,
+                legal_notes=legal_notes,
+                legal_basis=legal_basis,
+            )
+
+        return ThemisCrewResult(
+            reply=final_answer or specialist_result.reply,
+            should_escalate=False,
+            category=specialist_result.category,
+            sensitivity=routing.sensitivity,
+            specialist=specialist_result.specialist,
+            confidence=specialist_result.confidence,
+            escalation_reason=None,
+            legal_reviewed=True,
+            legal_risk_level=risk_level,
+            legal_notes=legal_notes,
+            legal_basis=legal_basis,
+        )
+
+    def _legal_review_fallback(
+        self,
+        specialist_result: ThemisCrewResult,
+        reason: str,
+    ) -> ThemisCrewResult:
+        return ThemisCrewResult(
+            reply=(
+                "Vou encaminhar sua solicitação para um analista de RH. "
+                "Não consegui concluir a revisão jurídica automática com segurança."
+            ),
+            should_escalate=True,
+            category=specialist_result.category,
+            sensitivity=specialist_result.sensitivity,
+            specialist=specialist_result.specialist,
+            confidence="baixa",
+            escalation_reason=reason,
+            legal_reviewed=False,
+            legal_risk_level="alto",
+            legal_notes=reason,
+            legal_basis=None,
         )
 
     def _kickoff_single_task(self, agent: Agent, task: Task) -> str:
@@ -312,6 +521,14 @@ class ThemisHRCrew:
         if value in {"media", "medio", "moderada", "medium"}:
             return "media"
         return "baixa"
+
+    def _normalize_risk_level(self, raw_risk_level: str) -> str:
+        value = self._slug(raw_risk_level)
+        if value in {"alto", "alta", "high"}:
+            return "alto"
+        if value in {"medio", "media", "moderado", "moderada", "medium"}:
+            return "medio"
+        return "baixo"
 
     def _category_for_area(self, area_key: str) -> str:
         if area_key == "assuntos_gerais":

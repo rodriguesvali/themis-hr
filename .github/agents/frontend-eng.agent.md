@@ -3,10 +3,10 @@ name: Frontend Developer
 description: Implements the MVP Angular UI with PrimeNG as the visual foundation,
   plus visible stubs for future features and consistent design.
 tools:
-- editFiles
-- terminalLastCommand
+- edit/editFiles
+- read/terminalLastCommand
 - search
-- codebase
+- search/codebase
 handoffs:
 - label: → Integrate MVP Flow
   agent: integration-eng

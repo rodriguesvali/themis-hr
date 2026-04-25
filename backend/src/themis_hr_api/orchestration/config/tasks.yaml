@@ -17,6 +17,14 @@ specialist_task:
   expected_output: >
     JSON com answer, confidence, should_escalate e escalation_reason.
 
+legal_review_task:
+  agent: legal_reviewer_agent
+  description: >
+    Executada após a resposta de um especialista quando ainda houver resposta automática possível.
+    O consultor jurídico revisa a aderência à CLT usando o PDF configurado como fonte de apoio.
+  expected_output: >
+    JSON com approved, final_answer, risk_level, should_escalate, legal_notes e legal_basis.
+
 direct_escalation:
   agent: principal_agent
   description: >

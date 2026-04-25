@@ -2,11 +2,11 @@
 name: Product Manager
 description: Context & Requirements Synthesis
 tools:
-- editFiles
-- terminalLastCommand
+- edit/editFiles
+- read/terminalLastCommand
 - search
-- codebase
-- fetch
+- search/codebase
+- web/fetch
 handoffs:
 - label: → Create Architecture
   agent: system-arch

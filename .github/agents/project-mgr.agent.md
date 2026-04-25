@@ -3,10 +3,10 @@ name: Project Manager
 description: Sets up project environment, structure, dependencies, and initial documentation
   only. No business logic.
 tools:
-- editFiles
-- terminalLastCommand
+- edit/editFiles
+- read/terminalLastCommand
 - search
-- codebase
+- search/codebase
 handoffs:
 - label: → Develop Frontend
   agent: frontend-eng

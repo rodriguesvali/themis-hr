@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     crewai_model: str = os.getenv("CREWAI_MODEL", "gemini-3.1-pro-preview")
     crewai_provider: str = os.getenv("CREWAI_PROVIDER", "google")
     google_api_key: str = os.getenv("GOOGLE_API_KEY", "")
+    clt_pdf_path: str = os.getenv("CLT_PDF_PATH", "backend/docs/consolidacao_leis_trabalho.pdf")
+    clt_embedding_model: str = os.getenv("CLT_EMBEDDING_MODEL", "gemini-embedding-001")
     knowledge_base_path: str = os.getenv("KNOWLEDGE_BASE_PATH", "./knowledge")
     log_level: str = os.getenv("LOG_LEVEL", "INFO")
 

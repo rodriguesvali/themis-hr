@@ -3,10 +3,10 @@ name: Backend Developer
 description: Implements the MVP FastAPI backend, CrewAI agent(s), core API, and
   minimal persistence when approved for the MVP.
 tools:
-- editFiles
-- terminalLastCommand
+- edit/editFiles
+- read/terminalLastCommand
 - search
-- codebase
+- search/codebase
 handoffs:
 - label: → Integrate MVP Flow
   agent: integration-eng

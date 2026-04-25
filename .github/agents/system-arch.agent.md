@@ -3,11 +3,11 @@ name: System Architect
 description: Produces the System Architecture Document (SAD) and System Functional
   Specifications (SFS) from provided research and PRD artifacts.
 tools:
-- editFiles
-- terminalLastCommand
+- edit/editFiles
+- read/terminalLastCommand
 - search
-- codebase
-- fetch
+- search/codebase
+- web/fetch
 handoffs:
 - label: → Start Build Phase
   agent: project-mgr

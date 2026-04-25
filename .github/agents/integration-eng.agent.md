@@ -3,10 +3,10 @@ name: Integration Engineer
 description: Integrates Angular frontend with FastAPI backend API endpoints for the
   MVP helpdesk flow.
 tools:
-- editFiles
-- terminalLastCommand
+- edit/editFiles
+- read/terminalLastCommand
 - search
-- codebase
+- search/codebase
 handoffs:
 - label: → Run QA Tests
   agent: qa-eng

@@ -3,10 +3,10 @@ name: QA Engineer
 description: Validate that the MVP works as intended, record coverage, defects, and
   future work.
 tools:
-- editFiles
-- terminalLastCommand
+- edit/editFiles
+- read/terminalLastCommand
 - search
-- codebase
+- search/codebase
 ---
 
 # Persona: QA Engineer (@qa-eng)

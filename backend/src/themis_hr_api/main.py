@@ -67,13 +67,26 @@ async def init_chat(request: ChatRequest, db: Session = Depends(get_db)):
         logger.error(f"Erro na engine da CrewAI: {e}")
         bot_reply = "Perdão, minha central de processamento (LLM) falhou no momento ou sua chave de IA é inválida. Tente novamente mais tarde."
         escalate = False
+        result = None
 
     # Gravar status de escalonamento se ocorreu
     if escalate:
         new_conv.status = "escalated"
         db.add(new_conv)
 
-    themis_msg = chat.Message(conversation_id=new_conv.id, role="themis", content=bot_reply)
+    themis_msg = chat.Message(
+        conversation_id=new_conv.id,
+        role="themis",
+        content=bot_reply,
+        category=result.category if result else None,
+        specialist=result.specialist if result else None,
+        confidence=result.confidence if result else None,
+        escalation_reason=result.escalation_reason if result else None,
+        legal_reviewed=result.legal_reviewed if result else False,
+        legal_risk_level=result.legal_risk_level if result else None,
+        legal_notes=result.legal_notes if result else None,
+        legal_basis=result.legal_basis if result else None,
+    )
     db.add(themis_msg)
     db.commit()
 
