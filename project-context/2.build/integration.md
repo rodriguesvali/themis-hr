@@ -3,7 +3,7 @@
 
 Data: 2026-04-19
 Responsável alvo: `@integration-eng`
-Status: brief inicial do bootstrap; deve ser atualizado in place durante a integração.
+Status: integração implementada; evidências atualizadas em 2026-04-25.
 
 ## Mission
 
@@ -60,11 +60,35 @@ Atualizar este arquivo com:
 
 ### Contratos efetivos usados
 - Envio: `POST /api/v1/conversations`
-- Payload In: `{ "user_id": "user_id_random", "message": "string" }`
+- Payload In: `{ "user_id": "1", "message": "string" }` no frontend atual do MVP.
 - Payload Out: `{ "conversation_id": int, "reply": "string", "status": "string" }`
 
 ### Problemas encontrados
 - *CORS Policy*: Sem permissão explícita no arquivo `main.py`, a primeira tentativa de chamada daria *Cross-Origin Block*. Corrigimos no backend em tempo real adicionando o Array `allow_origins`.
 
 ### Status do fluxo ponta a ponta
-- **Concluído**. A conexão foi validada. O front-end envia a mensagem e o backend (ainda sem o agente do CrewAI acoplado à inteligência LLM) processa o log de chat no postgres do ambiente e devolve a resposta Mockada com sucesso.
+- **Implementado com ressalva de validação runtime.** A conexão Angular -> FastAPI está codificada via `ChatService` e o backend expõe `POST /api/v1/conversations` com persistência e chamada a `ThemisHRCrew().run`.
+- A leitura anterior de que o backend devolvia apenas resposta mockada ficou desatualizada. O endpoint atual aciona o orquestrador CrewAI e persiste metadados de categoria, especialista, confiança, escalonamento e revisão jurídica.
+- Em 2026-04-25 foram revalidados: build Angular (`npm run build`), testes unitários do backend (`backend/.venv/bin/python -m unittest discover -s backend/tests`) e healthcheck da API via `TestClient`.
+- O round-trip real completo via browser + FastAPI + banco + LLM/CrewAI não foi reexecutado nesta rodada; deve ser o primeiro teste manual antes de demonstração ou rollout.
+
+## Sources
+
+- `frontend/src/app/chat.service.ts`
+- `backend/src/themis_hr_api/main.py`
+- `backend/src/themis_hr_api/orchestration/crew.py`
+- `project-context/2.build/qa.md`
+
+## Assumptions
+
+- Adapter ativo assumido como `crewai`.
+- O ambiente de demonstração terá banco migrado e credenciais LLM válidas.
+
+## Open Questions
+
+- O fluxo síncrono atual é aceitável para a demonstração ou precisa de fila/SSE/WebSocket antes do próximo gate?
+- A recuperação de histórico no frontend entra na próxima iteração ou permanece fora do MVP local?
+
+## Audit
+
+- Atualizado por Codex em 2026-04-25 para alinhar o artefato ao backend atual com CrewAI.
