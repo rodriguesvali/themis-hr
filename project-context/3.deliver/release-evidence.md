@@ -50,6 +50,17 @@ O MVP local possui:
   - Resultado: build concluído e artefatos gerados em `frontend/dist/frontend`.
 - **API health smoke test:** FastAPI `TestClient` em `GET /health`
   - Resultado: HTTP 200 com `{"status": "ok", "app_env": "development"}`.
+- **Alembic runtime check:** `alembic current`
+  - Resultado: banco PostgreSQL acessível e no head `8b9f2d4c1a3e`.
+- **Backend real conversation smoke:** `POST /api/v1/conversations`
+  - Resultado: HTTP 200, conversa `49`, status `active`, resposta gerada por CrewAI/Gemini com revisão jurídica.
+  - Persistência confirmada: mensagem da Themis com categoria `Férias e Licenças`, especialista `ferias`, confiança `media`, `legal_reviewed = true` e risco jurídico `baixo`.
+- **Escalation smoke:** `POST /api/v1/conversations`
+  - Mensagem: denúncia de assédio moral.
+  - Resultado: HTTP 200, conversa `50`, status `escalated`, resposta de encaminhamento humano.
+- **Browser round-trip:** Playwright Chromium em `http://localhost:4200/`
+  - Resultado: tela carregou, mensagem enviada pelo chat, estado "Themis está digitando..." exibido e resposta final renderizada na UI.
+  - Persistência confirmada: conversa `52`, `user_id = 1`, status `active`, categoria `Férias e Licenças`, especialista `ferias`, confiança `media`, `legal_reviewed = true`, risco jurídico `baixo`.
 
 ### Artifact Validation
 
@@ -60,31 +71,31 @@ O MVP local possui:
 
 ## Release Decision
 
-**Decisão:** avançar para demonstração local controlada, não para produção.
+**Decisão:** aprovado para demonstração local controlada, não para produção.
 
-O MVP está tecnicamente consistente para uma demonstração local desde que o ambiente esteja preparado com:
+O MVP foi validado em ambiente local com frontend, backend, PostgreSQL, CrewAI/Gemini e revisão jurídica. Para repetir a demonstração, o ambiente precisa manter:
 
 - banco disponível e migrations aplicadas;
 - variáveis de ambiente revisadas;
 - uma única chave LLM válida configurada;
-- teste manual do fluxo browser + FastAPI + banco + LLM antes da demo.
+- backend em `http://localhost:8000`;
+- frontend em `http://localhost:4200`.
 
 ## Residual Risks
 
 - O endpoint de conversa executa CrewAI de forma síncrona; chamadas com LLM podem ultrapassar o tempo aceitável de resposta.
-- O fluxo completo com LLM real não foi reexecutado nesta rodada de validação.
+- O fluxo completo com LLM real foi validado localmente, mas ainda não foi medido sob carga, concorrência ou ambiente staging.
 - O frontend ainda não recupera histórico após reload, apesar do backend expor endpoint de consulta.
 - A auditoria jurídica detalhada ainda não persiste os trechos exatos recuperados da CLT em tabela própria.
 - Casos trabalhistas ambíguos ou sensíveis devem continuar escalando para humano.
 
 ## Next Gates
 
-1. Executar migrations no banco alvo.
-2. Rodar backend e frontend localmente.
-3. Enviar uma pergunta simples de férias/remuneração pela UI e verificar persistência.
-4. Enviar um caso sensível e confirmar escalonamento.
-5. Testar falha controlada do backend e confirmar fallback visual no chat.
-6. Definir se a próxima iteração resolve histórico de chat ou processamento assíncrono primeiro.
+1. Testar falha controlada do backend e confirmar fallback visual no chat.
+2. Repetir o fluxo em staging, quando existir.
+3. Medir latência real do endpoint de conversa com LLM.
+4. Definir se a próxima iteração resolve histórico de chat ou processamento assíncrono primeiro.
+5. Criar tarefa para evitar dupla configuração simultânea de `GOOGLE_API_KEY` e `GEMINI_API_KEY`.
 
 ## Sources
 
@@ -100,6 +111,9 @@ O MVP está tecnicamente consistente para uma demonstração local desde que o a
 - `backend/src/themis_hr_api/orchestration/crew.py`
 - `backend/tests/test_legal_review.py`
 - `frontend/src/app/chat.service.ts`
+- Execução local de `alembic current` em 2026-04-25.
+- Execução local de `curl` para `/health` e `POST /api/v1/conversations` em 2026-04-25.
+- Execução local de Playwright Chromium contra `http://localhost:4200/` em 2026-04-25.
 
 ## Assumptions
 

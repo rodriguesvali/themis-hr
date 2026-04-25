@@ -71,11 +71,14 @@ Atualizar este arquivo com:
   - Endpoint: `GET /health`.
   - Resultado observado: HTTP 200 com `{"status": "ok", "app_env": "development"}`.
 - **[Confirmado por inspeção]** O endpoint `POST /api/v1/conversations` não está mais limitado a uma resposta mockada fixa: `main.py` chama `ThemisHRCrew().run`, persiste a mensagem do colaborador, persiste a resposta da Themis e salva metadados de categoria, especialista, confiança, escalonamento e revisão jurídica quando retornados pelo orquestrador.
-- **[Não executado nesta rodada]** Round-trip real completo via browser + FastAPI + banco + LLM/CrewAI, porque exigiria ambiente runtime ativo com banco migrado e credenciais válidas de provider LLM.
+- **[Passou]** Alembic runtime check: banco PostgreSQL acessível e no head `8b9f2d4c1a3e`.
+- **[Passou]** Round-trip real via backend: `POST /api/v1/conversations` retornou HTTP 200 na conversa `49`, status `active`, com resposta gerada por CrewAI/Gemini e revisão jurídica persistida.
+- **[Passou]** Escalonamento real via backend: mensagem sensível sobre assédio retornou HTTP 200 na conversa `50`, status `escalated`, com handoff humano.
+- **[Passou]** Round-trip real via browser: Playwright abriu `http://localhost:4200/`, enviou pergunta pelo chat, exibiu "Themis está digitando..." e renderizou resposta final. Persistência confirmada na conversa `52` com categoria `Férias e Licenças`, especialista `ferias`, confiança `media`, `legal_reviewed = true` e risco jurídico `baixo`.
 
 ### Defeitos / Limitações Encontrados (Gaps)
 - O endpoint de conversa chama o CrewAI de forma síncrona; em uso real com LLM, pode haver latência alta e risco de timeout percebido pela UI.
-- A validação de 2026-04-25 não executou o fluxo real com credenciais LLM; a confiança atual vem de testes unitários da orquestração jurídica, build do frontend e healthcheck da API.
+- A validação de 2026-04-25 executou o fluxo real com credenciais LLM localmente, mas ainda não mediu latência sob carga, concorrência ou ambiente staging.
 - Não existe uma funcionalidade completa de histórico de chat desenhada na UI. O backend expõe `GET /api/v1/conversations/{conversation_id}`, mas o frontend ainda não recupera a conversa após reload.
 - O usuário está fixo no frontend como `userId = "1"` para fins de MVP. Para uso real será necessário integrar autenticação, sessão ou JWT.
 - A auditoria detalhada dos trechos exatos recuperados da CLT ainda não possui tabela própria.
@@ -99,11 +102,12 @@ Atualizar este arquivo com:
 - Resultado local de `backend/.venv/bin/python -m unittest discover -s backend/tests` em 2026-04-25.
 - Resultado local de `npm run build` em 2026-04-25.
 - Resultado local de smoke test `GET /health` via FastAPI `TestClient` em 2026-04-25.
+- Resultado local de `alembic current`, `curl POST /api/v1/conversations` e Playwright Chromium em 2026-04-25.
 
 ## Assumptions
 
 - Adapter ativo assumido como `crewai`, conforme `AGENTS.md`.
-- A validação desta rodada prioriza evidências reprodutíveis sem acionar LLM real.
+- A validação desta rodada acionou LLM real no ambiente local e registrou evidências de persistência.
 
 ## Open Questions
 
@@ -114,4 +118,4 @@ Atualizar este arquivo com:
 ## Audit
 
 - Atualizado por Codex em 2026-04-25.
-- A inconsistência anterior entre QA e backend foi corrigida: o endpoint atual chama CrewAI; o round-trip real com LLM não foi reexecutado nesta rodada.
+- A inconsistência anterior entre QA e backend foi corrigida: o endpoint atual chama CrewAI e o round-trip real com LLM foi executado localmente nesta rodada.

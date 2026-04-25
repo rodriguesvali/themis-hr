@@ -69,8 +69,8 @@ Atualizar este arquivo com:
 ### Status do fluxo ponta a ponta
 - **Implementado com ressalva de validação runtime.** A conexão Angular -> FastAPI está codificada via `ChatService` e o backend expõe `POST /api/v1/conversations` com persistência e chamada a `ThemisHRCrew().run`.
 - A leitura anterior de que o backend devolvia apenas resposta mockada ficou desatualizada. O endpoint atual aciona o orquestrador CrewAI e persiste metadados de categoria, especialista, confiança, escalonamento e revisão jurídica.
-- Em 2026-04-25 foram revalidados: build Angular (`npm run build`), testes unitários do backend (`backend/.venv/bin/python -m unittest discover -s backend/tests`) e healthcheck da API via `TestClient`.
-- O round-trip real completo via browser + FastAPI + banco + LLM/CrewAI não foi reexecutado nesta rodada; deve ser o primeiro teste manual antes de demonstração ou rollout.
+- Em 2026-04-25 foram revalidados: build Angular (`npm run build`), testes unitários do backend (`backend/.venv/bin/python -m unittest discover -s backend/tests`), healthcheck da API, Alembic no head `8b9f2d4c1a3e`, chamadas reais ao endpoint de conversa e teste browser com Playwright.
+- O round-trip real completo via browser + FastAPI + PostgreSQL + CrewAI/Gemini foi executado com sucesso e persistiu a conversa `52`.
 
 ## Sources
 
