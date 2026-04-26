@@ -128,10 +128,12 @@ Integrações com SSO, HRIS, ITSM ou mensageria ficam fora do primeiro corte.
 
 ### CrewAI Responsibilities
 
-- executar a sequência de agentes do produto;
+- executar o fluxo multiagente do produto;
 - manter fronteiras claras entre responsabilidades;
 - produzir saídas estruturadas por etapa;
 - facilitar auditabilidade e evolução do comportamento.
+
+No build atual, a sequência conceitual de seis papéis foi implementada como fluxo condicional para reduzir custo e contexto: `principal_agent` faz roteamento e sensibilidade, um especialista de domínio responde sob demanda e `legal_reviewer_agent` revisa a resposta quando houver resposta automática possível.
 
 ### Knowledge Retrieval / RAG Responsibilities
 
@@ -298,6 +300,17 @@ Não é necessário, no primeiro corte:
 
 ### Agent Set
 
+#### Current Runtime Shape
+
+O SAD original descreve papéis conceituais. O MVP implementado usa estes agentes runtime:
+
+- **Principal Agent:** classifica intenção, sensibilidade e área.
+- **Domain Specialists:** férias, remuneração, jornada, admissão e rescisão.
+- **Legal Reviewer Agent:** consulta suporte textual da CLT e revisa risco jurídico antes de envio.
+- **Direct Escalation Path:** assuntos gerais, alta sensibilidade e lacunas de cobertura são encaminhados sem especialista.
+
+Esse desenho preserva os objetivos de intake, classificação, conhecimento, resposta, sentimento e escalonamento, mas agrega responsabilidades para manter o MVP simples e testável.
+
 #### Intake Agent
 
 - **Responsibility:** normalizar a mensagem de entrada
@@ -348,7 +361,7 @@ Não é necessário, no primeiro corte:
 
 ### Task Sequencing
 
-Sequência padrão do MVP:
+Sequência conceitual esperada:
 
 1. Intake
 2. Classification
@@ -356,6 +369,15 @@ Sequência padrão do MVP:
 4. Response
 5. Sentiment
 6. Escalation
+
+Sequência runtime atual:
+
+1. `principal_agent` classifica área, categoria, sensibilidade e motivo.
+2. Casos de alta sensibilidade ou assuntos gerais são escalados diretamente.
+3. Um especialista de área recebe somente a base de conhecimento correspondente.
+4. A resposta candidata passa por revisão jurídica automática quando houver resposta automática possível.
+5. Risco médio/alto, reprovação, falha de revisão ou baixa confiança geram escalonamento.
+6. Resposta final e metadados são persistidos em `messages`.
 
 ### Context Passing
 
@@ -385,9 +407,10 @@ Entidades mínimas:
 
 - `conversation`
 - `message`
-- `classification_result`
-- `escalation_event`
-- `knowledge_reference`
+- metadados de classificação em `message`
+- metadados de escalonamento em `message`
+- metadados de revisão jurídica em `message`
+- evidências detalhadas de conhecimento e tool calls como extensão futura
 
 ### Policy and Knowledge Sources
 
@@ -419,7 +442,7 @@ Fontes iniciais esperadas:
 
 ### Initial Database Choice
 
-Para o MVP inicial, a recomendação é:
+Recomendação original:
 
 - **SQLite** para desenvolvimento local e experimentação rápida;
 - caminho arquitetural preparado para **PostgreSQL** em staging/produção.
@@ -429,6 +452,12 @@ Racional:
 - acelera o início;
 - reduz custo e atrito;
 - mantém simplicidade sem impedir evolução.
+
+Decisão implementada no build:
+
+- O primeiro run funcional usa **PostgreSQL** pelo Dev Container já fornecer o serviço.
+- A escolha reduz retrabalho de migração futura, mas exige banco disponível para repetir a demo local.
+- Alembic continua sendo a ferramenta única de versionamento.
 
 ### How Alembic Manages Schema Evolution
 
@@ -541,7 +570,9 @@ Cenários mínimos:
 - FastAPI como backend
 - CrewAI como orquestrador dos agentes do produto
 - Alembic para versionamento de schema
-- SQLite inicial com caminho de evolução para PostgreSQL
+- PostgreSQL no Dev Container para o run funcional atual
+- fluxo CrewAI condicional com principal, especialista sob demanda e revisor jurídico
+- revisão jurídica automática apoiada por busca textual no PDF local da CLT
 
 ### Assumptions
 
@@ -594,6 +625,13 @@ Cenários mínimos:
 - agentes do produto;
 - métricas e riscos do MVP.
 
+### To Build Artifacts
+
+- `project-context/2.build/backend.md`: implementação FastAPI, CrewAI condicional, PostgreSQL, Alembic e revisão jurídica.
+- `project-context/2.build/frontend.md`: Angular 21, PrimeNG 21, Nora, chat e rota admin inicial.
+- `project-context/2.build/integration.md`: contrato `POST /api/v1/conversations` e validação ponta a ponta.
+- `project-context/2.build/qa.md`: evidências locais e riscos residuais.
+
 ## 14. Audit
 
 - **agent/persona:** `@system-arch`
@@ -605,3 +643,4 @@ Cenários mínimos:
   - banco inicial simples
   - base de conhecimento curada
   - escalonamento humano como parte nativa do fluxo
+- **update:** Codex em 2026-04-26 alinhou o SAD ao runtime atual: PostgreSQL no Dev Container, fluxo condicional CrewAI e revisão jurídica automática.

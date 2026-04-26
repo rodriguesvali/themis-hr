@@ -2,6 +2,8 @@
 
 Checklist operacional para conduzir o bootstrap do Themis HR com AAMAD, do discovery até a validação do MVP.
 
+Status em 2026-04-26: o bootstrap Codex-native foi recriado em `.codex/aamad/`; o MVP local já passou por validação com ressalvas e está apto somente a demonstração local controlada.
+
 ---
 
 ## Phase 1: Requirements Definition (`@product-mgr`)
@@ -21,7 +23,17 @@ Checklist operacional para conduzir o bootstrap do Themis HR com AAMAD, do disco
 
 - [ ] Garantir que `project-context/1.define/` contém:
   - [ ] `mr.md`
+  - [ ] `mrd.md`
   - [ ] `prd.md`
+  - [ ] `sad.md`
+  - [ ] `sfs/*.md` quando houver fluxo já implementado
+  - [ ] `open-questions.md`
+- [ ] Garantir que `.codex/aamad/` contém:
+  - [ ] `workflow.md`
+  - [ ] `personas.md`
+  - [ ] `rules.md`
+  - [ ] `delegation.md`
+  - [ ] `templates/`
 - [ ] Confirmar que `.cursor/` contém:
   - [ ] `.cursor/agents/`
   - [ ] `.cursor/rules/`, `.cursor/prompts/`, `.cursor/templates/`
@@ -124,7 +136,9 @@ Checklist operacional para conduzir o bootstrap do Themis HR com AAMAD, do disco
 - [ ] Consolidar artefatos em `project-context/2.build/` e `project-context/3.deliver/`.
 - [ ] Registrar backlog e deferrals.
 - [ ] Converter gaps identificados em issues ou tarefas futuras.
+- [ ] Antes de staging/produção, revisar `project-context/3.deliver/deployment.md` e `project-context/3.deliver/operations.md`.
+- [ ] Antes de nova implementação relevante, revisar `project-context/1.define/open-questions.md`.
 
 ---
 
-Para detalhes adicionais, consulte [README.md](README.md), `.cursor/templates/` e `.cursor/rules/`.
+Para detalhes adicionais, consulte [README.md](README.md), `.codex/aamad/`, `.cursor/templates/` e `.cursor/rules/`.

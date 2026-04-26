@@ -49,6 +49,8 @@ Resumo prático:
 
 ```text
 themis-hr/
+├── .codex/
+│   └── aamad/           # Workflow, personas, regras e templates Codex-native
 ├── .cursor/
 │   ├── agents/          # Personas para uso no Cursor
 │   ├── prompts/         # Prompts guiados do framework
@@ -183,6 +185,7 @@ Durante essa fase, a interação principal acontece no IDE. O bootstrap do AAMAD
 
 ## IDEs
 
+- Codex usa `AGENTS.md` e `.codex/aamad/`.
 - Cursor usa as definições em `.cursor/`.
 - VS Code / GitHub Copilot usa `.github/agents/`, `.github/instructions/` e `.vscode/settings.json`.
 

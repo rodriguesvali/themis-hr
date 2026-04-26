@@ -130,6 +130,8 @@ O Themis HR pode se diferenciar por:
 - A configuração deve ser preferencialmente orientada por arquivos.
 - O fluxo principal do MVP será predominantemente sequencial, com regras claras de passagem de contexto.
 - Cada etapa deve produzir saídas úteis para a próxima, e o backend deve manter rastreabilidade do fluxo.
+- O build atual aprovou uma simplificação operacional para controlar custo e latência: um `principal_agent` classifica a mensagem e aciona somente um especialista de área quando houver resposta automática possível.
+- Respostas automáticas passam por `legal_reviewer_agent` antes de chegar ao colaborador; risco médio/alto, ambiguidade, falha de revisão ou alta sensibilidade geram escalonamento humano.
 
 ### Core Agent Definitions
 
@@ -174,6 +176,15 @@ O Themis HR pode se diferenciar por:
 - **Goal:** encaminhar quando a confiança for baixa, a política exigir ou o caso for sensível
 - **Inputs:** classificação, resposta candidata, flags de risco e sentimento
 - **Outputs:** decisão final: responder ou escalar
+
+#### Current MVP Runtime Mapping
+
+O PRD mantém os papéis conceituais acima, mas o runtime MVP implementado no backend usa agentes agregados para reduzir custo e contexto:
+
+- `principal_agent`: agrega intake leve, classificação, sensibilidade e roteamento.
+- especialistas por área: `ferias_agent`, `remuneracao_agent`, `jornada_agent`, `admissao_agent`, `rescisao_agent`.
+- `legal_reviewer_agent`: revisa a resposta candidata com apoio textual do PDF da CLT.
+- escalonamento direto: aplicado para assuntos gerais, alta sensibilidade, lacunas de conhecimento, baixa confiança ou risco jurídico.
 
 ### Integration Requirements
 
@@ -342,7 +353,7 @@ Como time de RH, quero ter rastreabilidade básica do atendimento para entender 
 
 - chat Angular com PrimeNG/Nora;
 - backend FastAPI;
-- crew inicial com 6 agentes do produto;
+- crew inicial com agente principal, especialistas sob demanda e revisor jurídico;
 - base de conhecimento inicial;
 - persistência mínima;
 - escalonamento básico;
@@ -422,3 +433,23 @@ O lançamento inicial é interno, como produto corporativo. O objetivo do MVP n�
 - necessidade de self-service: validada por ServiceNow, Zendesk e Workday;
 - importância de handoff humano: reforçada por SHRM e pelo estudo da SAP;
 - stack técnico: coerente com documentação oficial de CrewAI, PrimeNG, FastAPI, SQLAlchemy e Alembic.
+
+## Sources
+
+- `CONTEXT.md`
+- `project-context/1.define/mr.md`
+- `project-context/1.define/mrd.md`
+- `project-context/1.define/sad.md`
+- `project-context/2.build/backend.md`
+- `project-context/2.build/qa.md`
+
+## Assumptions
+
+- O MVP atual é para demonstração local controlada.
+- Os papéis conceituais de agentes podem ser agregados em menos agentes runtime quando a arquitetura documentar o trade-off.
+- Casos sensíveis seguem escalando para humano.
+
+## Audit
+
+- Criado por `@product-mgr` em 2026-04-19.
+- Atualizado por Codex em 2026-04-26 para registrar o mapeamento runtime atual do CrewAI após recriação do bootstrap AAMAD Codex-native.

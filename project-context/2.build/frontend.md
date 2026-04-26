@@ -3,7 +3,7 @@
 
 Data: 2026-04-19
 Responsável alvo: `@frontend-eng`
-Status: brief inicial do bootstrap; deve ser atualizado in place conforme o frontend for implementado.
+Status: implementado para MVP local; ainda possui gaps de histórico e validação de fallback técnico.
 
 ## Mission
 
@@ -86,3 +86,30 @@ Atualizar este arquivo com:
 
 ### Próximos passos
 - Criar a recuperação do Histórico e Painel Interativo real no Admin.
+
+## Sources
+
+- `frontend/src/app/chat.service.ts`
+- `frontend/src/app/chat.ts`
+- `frontend/src/app/admin/admin.ts`
+- `frontend/src/app/app.routes.ts`
+- `frontend/src/app/app.config.ts`
+- `frontend/package.json`
+- `project-context/2.build/qa.md`
+
+## Assumptions
+
+- O frontend atual é voltado para demo local.
+- O `userId = "1"` permanece um placeholder de MVP até existir autenticação.
+- A integração com backend foi registrada em `integration.md`.
+
+## Open Questions
+
+- O histórico após reload deve entrar na próxima iteração?
+- A rota admin será evoluída para operação real ou seguirá como placeholder visual?
+- O fallback visual precisa de teste browser com backend indisponível.
+
+## Audit
+
+- Criado por `@frontend-eng` em 2026-04-19.
+- Atualizado por Codex em 2026-04-26 para completar metadados AAMAD.

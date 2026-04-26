@@ -193,3 +193,27 @@ Dev Containers: Rebuild and Reopen in Container
 - `@frontend-eng`: scaffold Angular + PrimeNG/Nora
 - `@integration-eng`: ligação frontend ↔ backend após existência dos dois lados
 - `@qa-eng`: validação funcional do MVP após integração mínima
+
+## Sources
+
+- `CONTEXT.md`
+- `project-context/1.define/prd.md`
+- `project-context/1.define/sad.md`
+- `.env.example`
+- `.devcontainer/`
+
+## Assumptions
+
+- O Dev Container é o caminho principal de desenvolvimento.
+- PostgreSQL está disponível para o run funcional atual.
+- Segredos são fornecidos por variáveis de ambiente locais.
+
+## Open Questions
+
+- O provider/modelo LLM oficial ainda precisa ser confirmado.
+- A próxima iteração deve formalizar scripts únicos para start/test dos dois lados?
+
+## Audit
+
+- Criado por `@project-mgr` em 2026-04-19.
+- Revisado por Codex em 2026-04-26 durante recriação do bootstrap AAMAD Codex-native.

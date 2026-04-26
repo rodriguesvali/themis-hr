@@ -3,7 +3,7 @@
 
 Data: 2026-04-19
 Responsável alvo: `@backend-eng`
-Status: brief inicial do bootstrap; deve ser atualizado in place conforme o backend for implementado.
+Status: implementado para MVP local com FastAPI, PostgreSQL, Alembic, CrewAI condicional e revisão jurídica automática.
 
 ## Mission
 
@@ -107,3 +107,34 @@ O backend está encapsulado na pasta `backend/src/themis_hr_api`. O Alembic est�
 - Conectar RAG vetorial por área antes da chamada ao especialista escolhido.
 - Persistir eventos detalhados de orquestração para auditoria completa por etapa.
 - Persistir ou rastrear os trechos exatos retornados pela consulta à CLT em uma tabela própria de evidências jurídicas.
+
+## Sources
+
+- `backend/src/themis_hr_api/main.py`
+- `backend/src/themis_hr_api/orchestration/crew.py`
+- `backend/src/themis_hr_api/orchestration/config/agents.yaml`
+- `backend/src/themis_hr_api/orchestration/config/tasks.yaml`
+- `backend/src/themis_hr_api/models/chat.py`
+- `backend/alembic/versions/`
+- `backend/tests/test_legal_review.py`
+- `project-context/1.define/sad.md`
+- `project-context/1.define/sfs/conversation-flow.md`
+- `project-context/1.define/sfs/legal-review.md`
+
+## Assumptions
+
+- Adapter ativo: `crewai`.
+- Provider atual: Google/Gemini via `GOOGLE_API_KEY`.
+- O endpoint síncrono é aceitável somente para demo local controlada.
+- A busca textual na CLT é uma salvaguarda inicial, não parecer jurídico nem validação legal completa.
+
+## Open Questions
+
+- Qual modelo Gemini será fixado para demonstração/staging?
+- O runtime deve migrar primeiro para fila, SSE ou WebSocket?
+- Qual formato de tabela será usado para evidências jurídicas e tool calls?
+
+## Audit
+
+- Criado por `@backend-eng` em 2026-04-19.
+- Atualizado por Codex em 2026-04-26 para completar metadados AAMAD e referenciar SFSs do fluxo atual.
