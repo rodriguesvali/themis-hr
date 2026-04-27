@@ -1,0 +1,65 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Backend: FastAPI",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": [
+        "themis_hr_api.main:app",
+        "--reload",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000"
+      ],
+      "cwd": "${workspaceFolder}/backend",
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/backend/src",
+        "AAMAD_ADAPTER": "crewai"
+      },
+      "jinja": true,
+      "justMyCode": true
+    },
+    {
+      "name": "Backend: Migrate + FastAPI",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": [
+        "themis_hr_api.main:app",
+        "--reload",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000"
+      ],
+      "cwd": "${workspaceFolder}/backend",
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/backend/src",
+        "AAMAD_ADAPTER": "crewai"
+      },
+      "preLaunchTask": "backend: alembic upgrade head",
+      "jinja": true,
+      "justMyCode": true
+    },
+    {
+      "name": "Frontend: Angular",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:4200",
+      "webRoot": "${workspaceFolder}/frontend",
+      "preLaunchTask": "frontend: ng serve"
+    },
+    {
+      "name": "Frontend: Angular Dev Server",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm start",
+      "cwd": "${workspaceFolder}/frontend"
+    }
+  ]
+}
