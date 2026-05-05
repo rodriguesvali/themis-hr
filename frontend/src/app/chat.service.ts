@@ -1,8 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../environments/environment';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 
 export interface ChatMessage {
     role: 'user' | 'themis' | 'human_agent';
@@ -41,17 +40,16 @@ export class ChatService {
     this.isTyping.set(true);
 
     this.http.post<ChatResponse>(this.apiUrl, { user_id: this.userId, message })
+        .pipe(finalize(() => this.isTyping.set(false)))
         .subscribe({
             next: (res) => {
                 const botMsg: ChatMessage = { role: 'themis', content: res.reply, created_at: new Date() };
                 this.messages.update(msgs => [...msgs, botMsg]);
-                this.isTyping.set(false);
             },
             error: (err) => {
                 console.error('Failed to send message', err);
                 const errorMsg: ChatMessage = { role: 'themis', content: 'Desculpe, ocorreu um erro ao processar sua mensagem. Tente novamente mais tarde.' };
                 this.messages.update(msgs => [...msgs, errorMsg]);
-                this.isTyping.set(false);
             }
         });
   }

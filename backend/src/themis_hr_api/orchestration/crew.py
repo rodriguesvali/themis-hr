@@ -20,8 +20,9 @@ from themis_hr_api.knowledge.rescisao import KNOWLEDGE_BASE_MOCK as KB_RESCISAO
 
 
 if settings.google_api_key:
-    # CrewAI expects this environment variable name for Gemini.
-    os.environ["GEMINI_API_KEY"] = settings.google_api_key
+    # Keep GOOGLE_API_KEY as the canonical runtime key for the demo.
+    os.environ["GOOGLE_API_KEY"] = settings.google_api_key
+    os.environ.pop("GEMINI_API_KEY", None)
 
 
 @dataclass(frozen=True)

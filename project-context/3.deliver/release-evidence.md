@@ -1,9 +1,9 @@
 # Themis HR
 ## Release Evidence
 
-Data: 2026-04-25
+Data: 2026-05-05
 Responsável alvo: consolidação de entrega
-Status: pronto para gate de demonstração local, com ressalvas explícitas.
+Status: pronto para demonstração local controlada e repetível; não aprovado para produção.
 
 ## Objective
 
@@ -27,7 +27,7 @@ Consolidar as evidências de entrega do MVP local do Themis HR após Define, Arc
 
 ## Delivery Status
 
-O projeto está no fechamento do Module 6: Validation e entrou na etapa Deliver.
+O projeto concluiu o gate de Delivery/readiness para demonstração local controlada.
 
 O MVP local possui:
 
@@ -38,7 +38,9 @@ O MVP local possui:
 - persistência mínima de conversas e mensagens;
 - orquestração CrewAI em modelo principal + especialista sob demanda;
 - revisão jurídica automática apoiada por consulta textual ao PDF local da CLT;
-- testes unitários cobrindo o fluxo de revisão jurídica.
+- testes unitários cobrindo o fluxo de revisão jurídica;
+- fallback visual do chat para backend indisponível;
+- configuração LLM com `GOOGLE_API_KEY` como chave canônica e `GEMINI_API_KEY` apenas como fallback legado.
 
 ## Evidence
 
@@ -69,15 +71,42 @@ O MVP local possui:
 - `project-context/2.build/integration.md` foi atualizado para refletir que o endpoint atual aciona CrewAI, não apenas resposta mockada.
 - `project-context/2.build/qa.md` foi atualizado com evidências de 2026-04-25 e limitações de validação runtime.
 
+### Readiness Validation em 2026-05-05
+
+- **Backend unit tests:** `backend/.venv/bin/python -m unittest discover -s backend/tests`
+  - Resultado: 7 testes executados, todos OK.
+  - Cobertura adicionada: precedência de `GOOGLE_API_KEY` sobre `GEMINI_API_KEY` e fallback legado quando apenas `GEMINI_API_KEY` existe.
+- **Frontend unit tests:** `npm test -- --watch=false` em `frontend/`
+  - Resultado: 2 arquivos de teste, 3 testes executados, todos OK.
+  - Cobertura adicionada: erro HTTP no `ChatService` renderiza fallback compreensível e limpa o estado de digitação.
+- **Frontend production build:** `npm run build` em `frontend/`
+  - Resultado: build concluído e artefatos gerados em `frontend/dist/frontend`.
+- **Alembic runtime check:** `.venv/bin/alembic current` em `backend/`
+  - Resultado: banco PostgreSQL acessível e no head `8b9f2d4c1a3e`.
+- **API health smoke:** `curl http://localhost:8000/health`
+  - Resultado: HTTP 200 com `{"status":"ok","app_env":"development"}`.
+- **Backend real conversation smoke:** `POST /api/v1/conversations`
+  - Mensagem fictícia: solicitação de 15 dias de férias vencidas.
+  - Resultado: HTTP 200, conversa `55`, status `escalated`, com resposta de handoff para RH por ausência de procedimento operacional interno na base.
+- **Escalation smoke:** `POST /api/v1/conversations`
+  - Mensagem fictícia: denúncia de assédio moral com medo de retaliação.
+  - Resultado: HTTP 200, conversa `56`, status `escalated`, com handoff humano.
+- **Browser round-trip:** Playwright Chromium em `http://localhost:4200/`
+  - Resultado: tela carregou, mensagem enviada pelo chat, estado "Themis está digitando..." exibido e resposta final renderizada.
+- **Browser backend-failure fallback:** Playwright Chromium com backend indisponível
+  - Resultado: fallback visual "Desculpe, ocorreu um erro ao processar sua mensagem. Tente novamente mais tarde." renderizado e indicador de digitação ausente ao final.
+- **Configuração LLM:** backend normaliza o runtime para `GOOGLE_API_KEY` como chave canônica.
+  - Resultado: `GEMINI_API_KEY` permanece fallback legado quando `GOOGLE_API_KEY` está ausente; quando ambas existem, o backend registra warning e usa `GOOGLE_API_KEY`.
+
 ## Release Decision
 
-**Decisão:** aprovado para demonstração local controlada, não para produção.
+**Decisão:** aprovado para demonstração local controlada e repetível, não para produção.
 
 O MVP foi validado em ambiente local com frontend, backend, PostgreSQL, CrewAI/Gemini e revisão jurídica. Para repetir a demonstração, o ambiente precisa manter:
 
 - banco disponível e migrations aplicadas;
 - variáveis de ambiente revisadas;
-- uma única chave LLM válida configurada;
+- uma única chave LLM válida configurada, preferencialmente `GOOGLE_API_KEY`;
 - backend em `http://localhost:8000`;
 - frontend em `http://localhost:4200`.
 
@@ -91,11 +120,10 @@ O MVP foi validado em ambiente local com frontend, backend, PostgreSQL, CrewAI/G
 
 ## Next Gates
 
-1. Testar falha controlada do backend e confirmar fallback visual no chat.
-2. Repetir o fluxo em staging, quando existir.
-3. Medir latência real do endpoint de conversa com LLM.
-4. Definir se a próxima iteração resolve histórico de chat ou processamento assíncrono primeiro.
-5. Criar tarefa para evitar dupla configuração simultânea de `GOOGLE_API_KEY` e `GEMINI_API_KEY`.
+1. Repetir o fluxo em staging, quando existir.
+2. Medir latência real do endpoint de conversa com LLM sob cenários controlados.
+3. Definir se a próxima iteração resolve histórico de chat ou processamento assíncrono primeiro.
+4. Definir requisitos mínimos de LGPD/security review antes de demonstração com dados reais.
 
 ## Sources
 
@@ -108,18 +136,23 @@ O MVP foi validado em ambiente local com frontend, backend, PostgreSQL, CrewAI/G
 - `project-context/2.build/integration.md`
 - `project-context/2.build/qa.md`
 - `backend/src/themis_hr_api/main.py`
+- `backend/src/themis_hr_api/core/config.py`
 - `backend/src/themis_hr_api/orchestration/crew.py`
+- `backend/tests/test_config.py`
 - `backend/tests/test_legal_review.py`
 - `frontend/src/app/chat.service.ts`
+- `frontend/src/app/chat.service.spec.ts`
 - Execução local de `alembic current` em 2026-04-25.
 - Execução local de `curl` para `/health` e `POST /api/v1/conversations` em 2026-04-25.
 - Execução local de Playwright Chromium contra `http://localhost:4200/` em 2026-04-25.
+- Execução local de testes, build, Alembic, curl e Playwright Chromium em 2026-05-05.
 
 ## Assumptions
 
 - Adapter ativo: `crewai`.
 - O ambiente de demonstração usa as mesmas portas padrão: frontend `4200`, backend `8000`.
 - As credenciais LLM serão fornecidas via variáveis de ambiente, nunca versionadas.
+- O gate atual continua limitado a demonstração local controlada com dados fictícios.
 
 ## Open Questions
 
@@ -131,3 +164,4 @@ O MVP foi validado em ambiente local com frontend, backend, PostgreSQL, CrewAI/G
 
 - Criado por Codex em 2026-04-25.
 - Baseado em inspeção local, testes automatizados e atualização dos artefatos de QA e integração.
+- Atualizado por Codex em 2026-05-05 para fechar Delivery/readiness de demonstração local.

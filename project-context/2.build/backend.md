@@ -124,7 +124,7 @@ O backend está encapsulado na pasta `backend/src/themis_hr_api`. O Alembic est�
 ## Assumptions
 
 - Adapter ativo: `crewai`.
-- Provider atual: Google/Gemini via `GOOGLE_API_KEY`.
+- Provider atual: Google/Gemini via `GOOGLE_API_KEY` como chave canônica; `GEMINI_API_KEY` permanece apenas como fallback legado quando `GOOGLE_API_KEY` estiver ausente.
 - O endpoint síncrono é aceitável somente para demo local controlada.
 - A busca textual na CLT é uma salvaguarda inicial, não parecer jurídico nem validação legal completa.
 

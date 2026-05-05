@@ -1,7 +1,7 @@
 # Themis HR
 ## Open Questions
 
-Data: 2026-04-26
+Data: 2026-05-05
 Responsável: consolidação AAMAD/Codex
 Status: ativo; deve ser revisado antes de nova iteração de build ou gate de demonstração.
 
@@ -26,9 +26,15 @@ Status: ativo; deve ser revisado antes de nova iteração de build ou gate de de
 ## Operations
 
 1. Qual provider/modelo LLM será o padrão oficial do MVP?
-2. O ambiente alvo usará apenas `GOOGLE_API_KEY` ou precisa manter compatibilidade com `GEMINI_API_KEY`?
-3. Quando existir staging, qual será o processo de aplicar migrations e validar o banco?
+2. Quando existir staging, qual será o processo de aplicar migrations e validar o banco?
+
+## Resolved for Demo Local
+
+1. Para demonstração local controlada, `GOOGLE_API_KEY` é a variável canônica de chave LLM.
+2. `GEMINI_API_KEY` permanece aceito apenas como fallback legado quando `GOOGLE_API_KEY` estiver ausente.
+3. Se ambas estiverem configuradas, o backend registra warning e usa `GOOGLE_API_KEY`.
 
 ## Audit
 
 - Consolidado por Codex em 2026-04-26 a partir de PRD, SAD, QA e release evidence.
+- Atualizado por Codex em 2026-05-05 para reclassificar a decisão de chave LLM no gate de demo local.

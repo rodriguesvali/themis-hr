@@ -3,7 +3,7 @@
 
 Data: 2026-04-19
 Responsável alvo: `@frontend-eng`
-Status: implementado para MVP local; ainda possui gaps de histórico e validação de fallback técnico.
+Status: implementado para MVP local; fallback técnico validado em 2026-05-05; ainda possui gap de histórico.
 
 ## Mission
 
@@ -107,7 +107,7 @@ Atualizar este arquivo com:
 
 - O histórico após reload deve entrar na próxima iteração?
 - A rota admin será evoluída para operação real ou seguirá como placeholder visual?
-- O fallback visual precisa de teste browser com backend indisponível.
+- O fallback visual foi validado com teste unitário do `ChatService` e browser smoke com backend indisponível em 2026-05-05.
 
 ## Audit
 

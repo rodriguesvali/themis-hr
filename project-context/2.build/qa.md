@@ -3,7 +3,7 @@
 
 Data: 2026-04-19
 Responsável alvo: `@qa-eng`
-Status: validado em 2026-04-25 com evidências automatizadas de backend, frontend e healthcheck da API.
+Status: validado em 2026-05-05 com evidências automatizadas, runtime local, browser round-trip e fallback técnico.
 
 ## Mission
 
@@ -76,6 +76,21 @@ Atualizar este arquivo com:
 - **[Passou]** Escalonamento real via backend: mensagem sensível sobre assédio retornou HTTP 200 na conversa `50`, status `escalated`, com handoff humano.
 - **[Passou]** Round-trip real via browser: Playwright abriu `http://localhost:4200/`, enviou pergunta pelo chat, exibiu "Themis está digitando..." e renderizou resposta final. Persistência confirmada na conversa `52` com categoria `Férias e Licenças`, especialista `ferias`, confiança `media`, `legal_reviewed = true` e risco jurídico `baixo`.
 
+### Validação de Readiness em 2026-05-05
+- **[Passou]** Testes unitários do backend: `backend/.venv/bin/python -m unittest discover -s backend/tests`.
+  - Resultado: 7 testes executados, todos OK.
+  - Cobertura adicionada: precedência de `GOOGLE_API_KEY` e fallback legado de `GEMINI_API_KEY`.
+- **[Passou]** Testes unitários do frontend: `npm test -- --watch=false` em `frontend/`.
+  - Resultado: 2 arquivos de teste, 3 testes executados, todos OK.
+  - Cobertura adicionada: erro HTTP no `ChatService` renderiza fallback compreensível e limpa `isTyping`.
+- **[Passou]** Build de produção do frontend: `npm run build` em `frontend/`.
+- **[Passou]** Alembic runtime check: banco PostgreSQL acessível e no head `8b9f2d4c1a3e`.
+- **[Passou]** Healthcheck real via backend: `GET /health` retornou HTTP 200.
+- **[Passou]** Round-trip real via backend: pergunta fictícia sobre férias retornou HTTP 200 na conversa `55` com handoff controlado para RH.
+- **[Passou]** Escalonamento real via backend: mensagem fictícia sensível sobre assédio retornou HTTP 200 na conversa `56`, status `escalated`, com handoff humano.
+- **[Passou]** Round-trip real via browser: Playwright abriu `http://localhost:4200/`, enviou pergunta pelo chat, exibiu "Themis está digitando..." e renderizou resposta final.
+- **[Passou]** Fallback visual com backend indisponível: Playwright renderizou a mensagem de erro compreensível e confirmou ausência final do indicador "Themis está digitando...".
+
 ### Defeitos / Limitações Encontrados (Gaps)
 - O endpoint de conversa chama o CrewAI de forma síncrona; em uso real com LLM, pode haver latência alta e risco de timeout percebido pela UI.
 - A validação de 2026-04-25 executou o fluxo real com credenciais LLM localmente, mas ainda não mediu latência sob carga, concorrência ou ambiente staging.
@@ -85,12 +100,12 @@ Atualizar este arquivo com:
 
 ### Riscos Residuais
 - A integração principal da IA, que é a orquestração dos agentes CrewAI e LLM, segue pesada para uma chamada HTTP síncrona. O backend deve evoluir para fila, polling, SSE ou WebSocket se o tempo de resposta exceder o aceitável.
-- A configuração de provider/modelo e chaves reais precisa ser validada no ambiente alvo. O teste local apontou que `GOOGLE_API_KEY` e `GEMINI_API_KEY` estão definidos simultaneamente, com precedência para `GOOGLE_API_KEY`.
+- A configuração de provider/modelo e chaves reais precisa ser validada no ambiente alvo. Para demo local, `GOOGLE_API_KEY` foi definido como chave canônica e `GEMINI_API_KEY` permanece apenas como fallback legado.
 - A revisão jurídica automática reduz risco, mas não substitui validação humana para casos trabalhistas ambíguos, denúncias, assédio, discriminação ou alto impacto.
-- O fallback visual de erro existe no `ChatService`, mas ainda não foi validado em browser com falha real do backend nesta rodada.
+- O fallback visual de erro foi validado com teste unitário e browser smoke em 2026-05-05.
 
 ### Recomendação
-- **Pronto com ressalvas para entrega técnica do MVP local.** A base está apta para consolidação em `project-context/3.deliver/`, desde que o status de release deixe explícito que a validação real com LLM/banco/browser ainda precisa ser repetida em ambiente runtime completo antes de uma demonstração ou rollout.
+- **Pronto para demonstração local controlada, não para produção.** A base está apta para o gate de demo local repetível, com ressalvas explícitas para latência síncrona do CrewAI, ausência de histórico no frontend, ausência de autenticação real e falta de validação em staging.
 
 ## Sources
 
@@ -103,6 +118,7 @@ Atualizar este arquivo com:
 - Resultado local de `npm run build` em 2026-04-25.
 - Resultado local de smoke test `GET /health` via FastAPI `TestClient` em 2026-04-25.
 - Resultado local de `alembic current`, `curl POST /api/v1/conversations` e Playwright Chromium em 2026-04-25.
+- Resultado local de testes, build, Alembic, curl e Playwright Chromium em 2026-05-05.
 
 ## Assumptions
 
@@ -119,3 +135,4 @@ Atualizar este arquivo com:
 
 - Atualizado por Codex em 2026-04-25.
 - A inconsistência anterior entre QA e backend foi corrigida: o endpoint atual chama CrewAI e o round-trip real com LLM foi executado localmente nesta rodada.
+- Atualizado por Codex em 2026-05-05 para registrar readiness de demonstração local e fallback técnico.
