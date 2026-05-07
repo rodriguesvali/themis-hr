@@ -196,6 +196,7 @@ Implementa o frontend Angular do MVP e registra decisões de UI.
 - Não conectar endpoints diretamente se isso pertencer ao handoff de integração
 - Preferir PrimeNG quando cobrir a necessidade
 - Usar o MCP do PrimeNG como apoio principal quando estiver disponível
+- Se o MCP do PrimeNG não estiver disponível, solicitar sua instalação antes de avançar com decisões ou implementação de UI baseadas em PrimeNG
 - Marcar claramente placeholders e itens fora do MVP
 
 **Prohibited Actions**
