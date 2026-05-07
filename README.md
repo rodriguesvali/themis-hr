@@ -155,6 +155,7 @@ O container `app` instala:
 - Alembic
 - CrewAI
 - CrewAI Tools
+- PrimeNG MCP para apoio de documentação e implementação UI no Codex
 
 ### Como abrir
 
@@ -172,6 +173,12 @@ O container `app` instala:
 
 No bootstrap atual, `CrewAI`, `CrewAI Tools` e dependências-base do backend são instalados no container via `.devcontainer/requirements-bootstrap.txt`.
 Quando o backend do projeto ganhar seu gerenciador de dependências definitivo, essas dependências devem migrar para os arquivos oficiais do projeto.
+
+### PrimeNG MCP no Codex
+
+O `postCreateCommand` instala o PrimeNG MCP em `~/.codex/mcp/primeng` e registra o servidor `primeng` no `~/.codex/config.toml`.
+
+O pacote fica fixado por `.devcontainer/primeng-mcp-package.json` porque a resolução transitiva mais recente do SDK MCP pode quebrar a inicialização do servidor. Essa configuração evita depender de `npx -y @primeng/mcp` a cada startup.
 
 ## Como Usar o Bootstrap
 
